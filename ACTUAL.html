@@ -192,11 +192,11 @@
 
         <script>
             // Текущая временная метка генерации этой страницы
-            const currentGenerationTimestamp = 1749152505; 
+            const currentGenerationTimestamp = 1749152949; 
             // URL файла с последней временной меткой - теперь относительный
             const latestUpdateFileUrl = 'latest_update.txt'; 
 
-            const newsData = [{"title": "Dune Awakening установила 2 рекорда — стала худшей и самой популярной игрой издателя Conan Exiles", "link": "https://ixbt.games/news/2025/06/05/dune-awakening-ustanovila-2-rekorda-stala-xudsei-igroi-izdatelya-conan-exiles-i-samoi-populyarnoi.html", "summary": "Ранний доступ к Dune Awakening стартовал с рекордным онлайном, но игроки массово жалуются на технические проблемы и низкий рейтинг (55%), что стало худшим результатом для издателя Funcom.", "question1": "Рекордный онлайн при \"худшем\" рейтинге — это успех или провал для Dune Awakening?", "question2": "Стоит ли вообще выпускать игру с таким количеством проблем?", "audio_url": "news_audio_0.mp3"}]; 
+            const newsData = [{"title": "Dune Awakening установила 2 рекорда — стала худшей и самой популярной игрой издателя Conan Exiles", "link": "https://ixbt.games/news/2025/06/05/dune-awakening-ustanovila-2-rekorda-stala-xudsei-igroi-izdatelya-conan-exiles-i-samoi-populyarnoi.html", "summary": "Ранний доступ к Dune Awakening стартовал с техническими проблемами и плохими отзывами, но при этом установил рекорд по онлайну для издателя Funcom.", "question1": "Стоит ли выпускать игры такими \"сырыми\" в ранний доступ?", "question2": "90 тысяч онлайна — это успех или провал для \"сломанной\" игры?", "audio_url": "news_audio_0.mp3"}]; 
             let currentIndex = 0; 
             const newsContentDiv = document.getElementById('news-content');
             const refreshButton = document.getElementById('refresh-button'); 
@@ -220,11 +220,14 @@
             }
 
             function displayNews(index) {
+                // Отладочное сообщение: выводим newsData в консоль браузера
+                console.log("newsData для отображения:", newsData); 
+                
                 stopCurrentAudio();
 
                 newsContentDiv.innerHTML = ''; 
-                if (newsData.length === 0) {
-                    newsContentDiv.innerHTML = '<p style="text-align: center; color: #aaa;">Не удалось загрузить новости. Нет данных.</p>';
+                if (newsData.length === 0 || !newsData[0].title) {
+                    newsContentDiv.innerHTML = '<p style="text-align: center; color: #aaa;">Не удалось загрузить новости. Нет данных или данные неполные.</p>';
                     refreshButton.style.display = 'none'; 
                     stopButton.style.display = 'none'; 
                     muteCheckbox.style.display = 'none'; 
@@ -249,7 +252,7 @@
                 stopButton.style.display = 'block'; 
                 muteCheckbox.style.display = 'inline-block'; 
                 
-                # Audio URL теперь является относительным путем к файлу, расположенному в той же директории Netlify
+                // Audio URL теперь является относительным путем к файлу, расположенному в той же директории Netlify
                 currentAudioUrl = item.audio_url + '?v=' + new Date().getTime(); 
                 newsAudio.src = currentAudioUrl;
                 newsAudio.load(); 
