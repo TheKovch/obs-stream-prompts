@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Новости для Стрима</title>
-        <!-- Дополнительные мета-теги для предотвращения кэширования -->
+        <!-- Мета-теги для предотвращения кэширования, важны для OBS и быстрых обновлений -->
         <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta http-equiv="Pragma" content="no-cache" />
         <meta http-equiv="Expires" content="0" />
@@ -192,11 +192,11 @@
 
         <script>
             // Текущая временная метка генерации этой страницы
-            const currentGenerationTimestamp = 1749152118; 
+            const currentGenerationTimestamp = 1749152505; 
             // URL файла с последней временной меткой - теперь относительный
             const latestUpdateFileUrl = 'latest_update.txt'; 
 
-            const newsData = [{"title": "Dune Awakening установила 2 рекорда — стала худшей и самой популярной игрой издателя Conan Exiles", "link": "https://ixbt.games/news/2025/06/05/dune-awakening-ustanovila-2-rekorda-stala-xudsei-igroi-izdatelya-conan-exiles-i-samoi-populyarnoi.html", "summary": "Ранний доступ к MMORPG Dune Awakening стартовал с серьёзными техническими проблемами и низкими оценками игроков (55% в Steam). Несмотря на это, игра поставила рекорд по онлайну для издателя Funcom, но стала их худшей по рейтингу.", "question1": "Почему рекордный онлайн при плохих отзывах?", "question2": "Готовы платить за \"сырую\" игру?", "audio_url": "news_audio_0.mp3"}]; 
+            const newsData = [{"title": "Dune Awakening установила 2 рекорда — стала худшей и самой популярной игрой издателя Conan Exiles", "link": "https://ixbt.games/news/2025/06/05/dune-awakening-ustanovila-2-rekorda-stala-xudsei-igroi-izdatelya-conan-exiles-i-samoi-populyarnoi.html", "summary": "Ранний доступ к Dune Awakening стартовал с рекордным онлайном, но игроки массово жалуются на технические проблемы и низкий рейтинг (55%), что стало худшим результатом для издателя Funcom.", "question1": "Рекордный онлайн при \"худшем\" рейтинге — это успех или провал для Dune Awakening?", "question2": "Стоит ли вообще выпускать игру с таким количеством проблем?", "audio_url": "news_audio_0.mp3"}]; 
             let currentIndex = 0; 
             const newsContentDiv = document.getElementById('news-content');
             const refreshButton = document.getElementById('refresh-button'); 
