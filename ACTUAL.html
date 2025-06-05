@@ -170,10 +170,10 @@
         <div class="container">
             <div id="news-content" class="article-summary">
                 <h2>Пропадающая шевелюра героя и сонмы багов. MindsEye попала одному игроку раньше времени, и теперь он делится опытом</h2>
-                <p class="summary">Игра MindsEye от Build a Rocket Boy столкнулась с серьезными багами по отзывам ранних игроков и уходом двух топ-менеджеров перед релизом. Студия обещает исправить всё масштабным патчем первого дня.</p>
+                <p class="summary">За неделю до выхода игры MindsEye студию Build a Rocket Boy покинули ключевые сотрудники. Ранние игроки сообщают о множестве багов, но разработчики обещают всё исправить масштабным патчем первого дня.</p>
                 <div class="questions-container">
-                    <div class="question-box">Топы сбежали с тонущего корабля?</div>
-                    <div class="question-box">Верите ли вы в патчи первого дня?</div>
+                    <div class="question-box">Уход топов перед релизом – тревожный звонок?</div>
+                    <div class="question-box">Патч первого дня: спасение или отмазка?</div>
                 </div>
             </div>
         </div>
@@ -185,7 +185,7 @@
 
         <script>
             // Текущая временная метка генерации этой страницы
-            const currentGenerationTimestamp = 1749154073; 
+            const currentGenerationTimestamp = 1749154505; 
             // URL файла с последней временной меткой - теперь относительный, ожидается в той же директории Netlify
             const latestUpdateFileUrl = 'latest_update.txt'; 
 
@@ -263,6 +263,7 @@
 
             // Механизм автоматической проверки обновлений
             function checkForUpdates() {
+                console.log("Проверка обновлений...");
                 fetch(latestUpdateFileUrl + '?t=' + new Date().getTime()) // Добавляем кэш-бастер к запросу файла
                     .then(response => {
                         if (!response.ok) {
@@ -272,12 +273,17 @@
                     })
                     .then(latestTimestamp => {
                         const serverTimestamp = parseInt(latestTimestamp.trim());
-                        console.log(`Текущая метка страницы: ${currentGenerationTimestamp}, Серверная метка: ${serverTimestamp}`);
+                        console.log(`Получена метка сервера: ${serverTimestamp}`);
+                        console.log(`Текущая метка страницы: ${currentGenerationTimestamp}`);
+                        console.log(`Серверная метка ${serverTimestamp} > Текущей метки ${currentGenerationTimestamp}? ${serverTimestamp > currentGenerationTimestamp}`);
+
 
                         if (serverTimestamp > currentGenerationTimestamp) {
                             console.log("Обнаружено новое обновление. Перезагрузка страницы...");
                             // Принудительная перезагрузка страницы с новым кэш-бастером
                             window.location.href = window.location.pathname + '?v=' + new Date().getTime(); 
+                        } else {
+                            console.log("Нет новых обновлений.");
                         }
                     })
                     .catch(error => {
