@@ -1,0 +1,226 @@
+
+    <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Новости для Стрима</title>
+        <style>
+            body { 
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                margin: 0; 
+                background-color: #000000; /* Чисто черный фон */
+                color: #e0e0e0; /* Светлый текст */
+                display: flex;
+                flex-direction: column; 
+                justify-content: flex-start; /* Выравнивание содержимого к верху */
+                align-items: center; /* Центрирование по горизонтали */
+                min-height: 100vh; /* Высота на весь экран */
+                width: 100vw; /* Ширина на весь экран */
+                padding: 0; /* Убираем padding у body */
+                box-sizing: border-box; 
+                overflow: hidden; /* Предотвращаем скроллбары */
+            }
+            .container { 
+                max-width: 98vw; 
+                width: 98vw;
+                height: 98vh; 
+                max-height: 98vh;
+                background-color: transparent; /* Убираем фон контейнера */
+                padding: 5px; /* Убираем лишний padding, оставляем минимальный */
+                border-radius: 0; /* Убираем скругление */
+                box-shadow: none; /* Убираем тень */
+                border: none; /* Убираем рамку */
+                text-align: left; 
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start; /* Начинаем сверху */
+                align-items: stretch; 
+                box-sizing: border-box; 
+            }
+            .article-summary { 
+                flex-grow: 1; 
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start; /* Выравниваем содержимое новости к верху */
+                border: none; 
+                background-color: transparent; 
+                padding: 0; /* Убираем padding у новости */
+                box-shadow: none; 
+            }
+            .article-summary h2 { 
+                color: #00ffff; 
+                font-size: 2em; /* Уменьшен на 20% от 2.5em */
+                text-align: center; 
+                margin-top: 0; 
+                margin-bottom: 5px; /* Сокращаем отступ между заголовком и пересказом */
+                text-shadow: 0 0 8px rgba(0,255,255,0.7); /* Легкое свечение для заголовка */
+                line-height: 1.1; /* Уменьшаем межстрочный интервал для заголовка */
+            }
+            .article-summary p { 
+                margin-bottom: 3px; /* Максимально близко */
+                line-height: 1.2; /* Сокращаем межстрочный интервал */
+                font-size: 1.35em; /* Уменьшен на 20% от 1.7em */
+                text-align: center; 
+                color: #f0f0f0; 
+            }
+            /* Специфично для пересказа - попытка уместить в 2 строки, обрезая лишнее */
+            .article-summary p.summary {
+                max-height: 2.6em; /* Приближаем к 2 строкам (2 * line-height 1.3) */
+                overflow: hidden;
+                text-overflow: ellipsis; 
+                display: -webkit-box;
+                -webkit-line-clamp: 2; /* Ограничение в 2 строки */
+                -webkit-box-orient: vertical;
+                margin-bottom: 8px; /* Отступ между пересказом и вопросами */
+            }
+            .questions-container {
+                display: flex;
+                flex-wrap: wrap; /* Позволяет вопросам переноситься на новую строку, если не хватает места */
+                justify-content: center; /* Центрируем вопросы */
+                gap: 8px; /* Небольшой отступ между вопросами */
+                margin-top: 5px; /* Отступ от пересказа */
+            }
+            .question-box {
+                background-color: rgba(0, 100, 200, 0.2); /* Синий с 20% прозрачностью */
+                border-radius: 8px; /* Скругленные края */
+                padding: 8px 15px; /* Отступы внутри прямоугольника */
+                color: #ffffff; /* Белый текст вопроса */
+                font-size: 1.2em; /* Шрифт для вопросов */
+                line-height: 1.3;
+                text-align: center;
+                flex-shrink: 0; /* Не сжимать элементы */
+                flex-grow: 1; /* Позволяет растягиваться */
+                max-width: 48%; /* Примерно половина ширины контейнера, для двух в ряд */
+                box-sizing: border-box; /* Учитываем padding */
+                text-shadow: 0 0 2px rgba(0,255,255,0.5); /* Легкое свечение */
+            }
+            @media (max-width: 600px) {
+                .question-box {
+                    max-width: 100%; /* На маленьких экранах вопросы будут друг под другом */
+                }
+            }
+
+            .article-summary a { 
+                color: #00aaff; 
+                text-decoration: none; 
+            }
+            .article-summary a:hover { 
+                text-decoration: underline; 
+                color: #00ccff;
+            }
+            .label { 
+                font-weight: bold; 
+                color: #ffffff; 
+                text-shadow: 0 0 2px rgba(255,255,255,0.5); /* Немного уменьшил тень */
+            }
+
+            .top-right-controls {
+                position: absolute;
+                top: 5px; /* Еще ближе к верху */
+                right: 5px; /* Еще ближе к правому краю */
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                z-index: 10;
+            }
+            button {
+                padding: 8px 18px; /* Чуть меньше кнопка */
+                font-size: 0.9em; /* Чуть меньше шрифт кнопки */
+                cursor: pointer;
+                background-color: #007bff; 
+                color: white;
+                border: none;
+                border-radius: 5px; /* Чуть меньше скругление */
+                box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+                transition: background-color 0.3s ease, transform 0.2s ease;
+                margin-bottom: 3px; /* Отступ между кнопкой и таймером */
+            }
+            button:hover {
+                background-color: #0056b3;
+                transform: translateY(-1px);
+            }
+            #timer-display {
+                font-size: 1.0em; /* Таймер без изменений */
+                color: #ffeb3b; 
+                font-weight: bold;
+                text-shadow: 0 0 4px rgba(255,235,59,0.7); /* Немного уменьшил тень таймера */
+            }
+        </style>
+    </head>
+    <body>
+        <div class="top-right-controls">
+            <button id="next-button">Далее</button>
+            <div id="timer-display"></div>
+        </div>
+
+        <div class="container">
+            <div id="news-content">
+                <!-- Контент новости будет вставлен сюда JavaScript'ом -->
+            </div>
+        </div>
+
+        <script>
+            const newsData = [{"title": "Игроки не верят, что The Witcher 4 запускали на PS5, авторы Stellar Blade провоцируют моддеров — самое интересное за 4 июня", "link": "https://ixbt.games/news/2025/06/05/igroki-ne-veryat-cto-the-witcher-4-zapuskali-na-ps5-avtory-stellar-blade-provociruyut-modderov-samoe.html", "summary": "В сегодняшнем дайджесте мы собрали все ключевые события и новости, произошедшие в мировой индустрии развлечений за последние сутки.", "question1": "Что вас сейчас больше всего цепляет в мире развлечений?", "question2": "Какую новость вы ждёте в индустрии развлечений?"}, {"title": "12 июня для Helldivers 2 выйдет новый премиальный варбонд с оружием и экипировкой", "link": "https://ixbt.games/news/2025/06/05/12-iyunya-dlya-helldivers-2-novyi-premialnyi-varbond-s-oruziem-i-ekipirovkoi.html", "summary": "12 июня в Helldivers 2 выйдет новый варбонд Force of Law, который будет стоить 1000 супер-кредитов, приобретаемых за реальные деньги или в миссиях.", "question1": "Готовы платить или гриндить?", "question2": "А вы вообще еще играете в Helldivers 2?"}, {"title": "Anbernic опубликовала обзорный трейлер с распаковкой портативной ретро-консоли RG35XXPro", "link": "https://ixbt.games/news/2025/06/05/anbernic-opublikovala-obzornyi-treiler-s-raspakovkoi-portativnoi-retro-konsoli-rg35xxpro.html", "summary": "Anbernic представила новую портативную ретро-консоль RG35XXPro, показав в видео ее компактность и поддержку более 30 игровых платформ, включая возможность стриминга. Устройство поступит в предзаказ 10 июня 2025 года по цене от $44.99.", "question1": "За 45 долларов — это удача или провал?", "question2": "Ретро-консоль и стриминг современных игр — зачем?"}, {"title": "Команда Dota 2 победила, несмотря на уничтоженный трон", "link": "https://ixbt.games/news/2025/06/05/komanda-dota-2-pobedila-nesmotrya-na-unictozennyi-tron.html", "summary": "В квалификации на The International 2025 по Dota 2 команда eSpoiled написала «GG», признав поражение, но в ту же секунду их крипы сломали трон соперника. В итоге, несмотря на автоматическую победу eSpoiled, судья присудил выигрыш Nemiga Gaming.", "question1": "Судья прав, отменив автоматическую победу?", "question2": "«GG» — это всегда конец игры?"}, {"title": "В Path of Exile 2 изменят систему дропа уникальных предметов. Появились тизеры новых вещей", "link": "https://ixbt.games/news/2025/06/05/v-path-of-exile-2-izmenyat-sistemu-dropa-unikalnyx-predmetov.html", "summary": "Grinding Gear Games значительно перерабатывает систему дропа уникальных предметов в Path of Exile 2, делая редкие и \"мифические\" вещи, такие как Headhunter, гораздо более доступными для игроков.", "question1": "Не сделает ли это игру слишком простой?", "question2": "Убьет ли это ценность редкого лута?"}, {"title": "Ремастер TES 4 Oblivion получил первый патч 1.1, но пока лишь в бете. Bethesda услышала отзывы игроков", "link": "https://ixbt.games/news/2025/06/05/remaster-tes-4-oblivion-polucil-pervyi-patc-11-bethesda-uslysala-otzyvy-igrokov.html", "summary": "Bethesda объявила о начале бета-теста патча 1.1 для ремастера The Elder Scrolls 4 Oblivion, который ожидается в июне 2025 года. Игроки ждали исправлений после многочисленных багов, обнаруженных на релизе.", "question1": "Опоздал ли патч на Oblivion?", "question2": "Это норма для Bethesda?"}, {"title": "Состоялся глобальный релиз Etheria: Restart — конкурента Honkai: Star Rail от авторов Torchlight: Infinite", "link": "https://ixbt.games/news/2025/06/05/sostoyalsya-reliz-etheria-restart-konkurenta-honkai-star-rail-ot-avtorov-torchlight-infinite.html", "summary": "Вышла Etheria: Restart — новая аниме-гача RPG от XD Games, прямой конкурент Honkai Star Rail на мобильных и ПК.", "question1": "Способна ли Etheria: Restart подвинуть Honkai Star Rail?", "question2": "Устали ли вы от аниме-гача RPG?"}, {"title": "Инсайдер раскрыл бесплатную игру из раздачи Epic Games Store. Ожидается Deathloop — шутер от авторов Dishonored", "link": "https://ixbt.games/news/2025/06/05/insaider-raskryl-besplatnuyu-igru-iz-razdaci-epic-games-store-ozidaetsya-deathloop-suter-ot-avtorov-.html", "summary": "Epic Games Store снова готовит сюрприз: инсайдеры сообщают, что следующей бесплатной игрой станет крупный шутер Deathloop от Arkane Studios!", "question1": "Бесплатные игры – главная причина сидеть в EGS?", "question2": "Deathloop – годный шутер или переоцененный?"}, {"title": "Saber показала новые машины для RoadCraft — технологичный симулятор получил дорожную карту до сентября 2025", "link": "https://ixbt.games/news/2025/06/05/saber-pokazala-novye-masiny-dlya-roadcraft-texnologicnyi-simulyator-polucil-doroznuyu-kartu-do-senty.html", "summary": "Разработчики RoadCraft анонсировали масштабные обновления до сентября 2025 года, включая фоторежим, новые авто и DLC \"Rebuild Expansion\" с бесплатным \"сложным режимом\".", "question1": "\"Сложный режим\" — это то, что нужно RoadCraft?", "question2": "Готовы платить за DLC, или ждете только бесплатный контент?"}, {"title": "Авторы Path of Exile показали новинки дополнения «Секреты Атласа»", "link": "https://ixbt.games/news/2025/06/05/avtory-path-of-exile-pokazali-novinki-dopolneniya-sekrety-atlasa.html", "summary": "Grinding Gear Games выпускает дополнение \"Секреты Атласа\" для первой Path of Exile с долгожданными улучшениями, включая автоподбор осколков и улучшенное управление на геймпаде. За просмотр стримов также обещают награды.", "question1": "Эти QoL-изменения – повод вернуться в PoE1?", "question2": "Автосбор осколков – это то, что изменит всё?"}]; 
+            let currentIndex = 0;
+            const newsContentDiv = document.getElementById('news-content');
+            const nextButton = document.getElementById('next-button');
+            const timerDisplay = document.getElementById('timer-display');
+            const refreshInterval = 30 * 1000; 
+            let timeLeft = 30; 
+
+            function updateTimer() {
+                timerDisplay.textContent = `${timeLeft}`; 
+                timeLeft--;
+                if (timeLeft < 0) {
+                    timeLeft = 30; 
+                }
+            }
+
+            function displayNews(index) {
+                newsContentDiv.innerHTML = ''; 
+                if (newsData.length === 0) {
+                    newsContentDiv.innerHTML = '<p style="text-align: center; color: #aaa;">Не удалось загрузить новости. Нет данных.</p>';
+                    nextButton.style.display = 'none';
+                    return;
+                }
+                
+                if (index >= 0 && index < newsData.length) {
+                    const item = newsData[index];
+                    const div = document.createElement('div');
+                    div.className = 'article-summary';
+                    div.innerHTML = `
+                        <h2>${item.title}</h2>
+                        <p class="summary"><span class="label">Пересказ:</span> ${item.summary}</p>
+                        <div class="questions-container">
+                            <div class="question-box">${item.question1}</div>
+                            <div class="question-box">${item.question2}</div>
+                        </div>
+                    `;
+                    newsContentDiv.appendChild(div);
+                    nextButton.style.display = (newsData.length <= 1 || index === newsData.length - 1) ? 'none' : 'block';
+                } else {
+                    newsContentDiv.innerHTML = '<p style="text-align: center; color: #aaa;">Ошибка отображения новости.</p>';
+                    nextButton.style.display = 'none';
+                }
+            }
+
+            nextButton.addEventListener('click', () => {
+                currentIndex = (currentIndex + 1) % newsData.length; 
+                displayNews(currentIndex);
+            });
+
+            document.addEventListener('DOMContentLoaded', () => {
+                displayNews(currentIndex);
+                updateTimer(); 
+                setInterval(updateTimer, 1000); 
+
+                setInterval(() => {
+                    console.log("Автоматическая перезагрузка страницы для обновления контента...");
+                    location.reload(); 
+                }, refreshInterval);
+            });
+        </script>
+    </body>
+    </html>
+    
