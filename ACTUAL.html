@@ -5,6 +5,10 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Новости для Стрима</title>
+        <!-- Дополнительные мета-теги для предотвращения кэширования -->
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
         <style>
             body { 
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -188,12 +192,12 @@
 
         <script>
             // Текущая временная метка генерации этой страницы
-            const currentGenerationTimestamp = 1749146056; 
+            const currentGenerationTimestamp = 1749146795; 
             const githubPagesBaseUrl = "https://TheKovch.github.io/obs-stream-prompts/";
             // Динамически передаем имя файла latest_update.txt из Python
             const latestUpdateFileUrl = "https://TheKovch.github.io/obs-stream-prompts/latest_update.20250605.txt"; 
 
-            const newsData = [{"title": "Исполнитель роли Артура из Red Dead Redemption 2 рассказал, какой бы совет дал актёрам Джейсона и Лусии из GTA 6", "link": "https://ixbt.games/news/2025/06/05/ispolnitel-roli-artura-iz-red-dead-redemption-2-rasskazal-kakoi-by-sovet-dal-aktyoram-dzeisona-i-lyu.html", "summary": "Роджер Кларк, звезда RDR2, дал совет актерам GTA 6: не поддаваться давлению хайпа, доверять Rockstar и позволить игре говорить за себя. При этом он подчеркнул, что актеры не должны забывать заявить о себе.", "question1": "Насколько оправданно такое давление на актеров GTA 6?", "question2": "Стоит ли актерам пиарить себя или их должна прославить игра?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
+            const newsData = [{"title": "В Steam бесплатно раздают Borderlands 2", "link": "https://ixbt.games/news/2025/06/05/v-steam-besplatno-razdayut-borderlands-2.html", "summary": "Borderlands 2 теперь бесплатно раздают в Steam, даже если вы пропустили недавнюю акцию в Epic Games Store.", "question1": "Заберете игру, несмотря на ограничения в РФ?", "question2": "Или оно того не стоит, чтобы заморачиваться?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
             let currentIndex = 0; 
             const newsContentDiv = document.getElementById('news-content');
             const refreshButton = document.getElementById('refresh-button'); 
