@@ -181,7 +181,12 @@
         <audio id="news-audio" preload="auto"></audio>
 
         <script>
-            const newsData = [{"title": "«Чужие» добрались до Земли. Вышел первый трейлер сериала Alien: Earth", "link": "https://ixbt.games/news/2025/06/05/cuzie-dobralis-do-zemli-vysel-pervyi-treiler-seriala-alien-earth.html", "summary": "FX и Hulu показали трейлер сериала «Чужой: Земля» — первого телепроекта во вселенной «Чужих», который станет приквелом к оригинальному фильму и стартует 12 августа. Сюжет развернется на Земле за два года до событий фильма, обещая катастрофу с ксеноморфами и корпоративное противостояние.", "question1": "Чужой на Земле: это интригует или уже перебор?", "question2": "Приквел к классике: нужен ли он вселенной Чужих?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
+            // Текущая временная метка генерации этой страницы
+            const currentGenerationTimestamp = 1749133567; 
+            const githubPagesBaseUrl = "https://TheKovch.github.io/obs-stream-prompts/";
+            const latestUpdateFileUrl = githubPagesBaseUrl + 'latest_update.txt'; // URL файла с последней временной меткой
+
+            const newsData = [{"title": "«Чужие» добрались до Земли. Вышел первый трейлер сериала Alien: Earth", "link": "https://ixbt.games/news/2025/06/05/cuzie-dobralis-do-zemli-vysel-pervyi-treiler-seriala-alien-earth.html", "summary": "FX и Hulu показали трейлер сериала \"Чужой: Земля\" — первого шоу во вселенной, которое станет приквелом к оригинальному фильму и выйдет 12 августа. Сюжет разворачивается на Земле в 2120 году, где крушение корабля с ксеноморфами запускает корпоративные войны вокруг создания синтетиков.", "question1": "Чужой на Земле: это свежо или испортит канон?", "question2": "Кто страшнее: ксеноморфы, синтетики или корпорации?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
             let currentIndex = 0; 
             const newsContentDiv = document.getElementById('news-content');
             const refreshButton = document.getElementById('refresh-button'); 
@@ -190,8 +195,6 @@
             const newsAudio = document.getElementById('news-audio'); 
 
             let currentAudioUrl = '';
-
-            // Функции updateTimer, refreshInterval и timeLeft удалены
 
             function displayNews(index) {
                 // Останавливаем текущее воспроизведение перед сменой новости
@@ -233,12 +236,12 @@
 
             function playCurrentAudio() {
                 const urlParams = new URLSearchParams(window.location.search);
-                const autoplayAudioParam = urlParams.get('autoplay_audio'); // Получаем параметр
+                const autoplayAudioParam = urlParams.get('autoplay_audio'); 
 
                 // Если muteCheckbox включен ИЛИ autoplay_audio=false в URL, то не воспроизводим
                 if (muteCheckbox.checked || autoplayAudioParam === 'false') {
                     console.log("Воспроизведение аудио пропущено из-за флажка отключения звука или параметра URL.");
-                    stopCurrentAudio(); // Гарантируем остановку
+                    stopCurrentAudio(); 
                     return;
                 }
 
@@ -264,7 +267,7 @@
 
             refreshButton.addEventListener('click', () => {
                 stopCurrentAudio(); 
-                location.reload(); 
+                location.reload(); // Ручная перезагрузка
             });
 
             stopButton.addEventListener('click', stopCurrentAudio);
@@ -277,15 +280,39 @@
                 }
             });
 
+            // --- Механизм автоматической проверки обновлений ---
+            function checkForUpdates() {
+                fetch(latestUpdateFileUrl + '?t=' + new Date().getTime()) // Добавляем кэш-бастер к запросу файла
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then(latestTimestamp => {
+                        const serverTimestamp = parseInt(latestTimestamp.trim());
+                        console.log(`Текущая метка: ${currentGenerationTimestamp}, Серверная метка: ${serverTimestamp}`);
+
+                        if (serverTimestamp > currentGenerationTimestamp) {
+                            console.log("Обнаружено новое обновление. Перезагрузка страницы...");
+                            location.reload(); 
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Ошибка при проверке обновлений:", error);
+                    });
+            }
 
             document.addEventListener('DOMContentLoaded', () => {
                 displayNews(0); 
                 
-                // Автоматическое воспроизведение при загрузке страницы, если звук не отключен
-                // Теперь это управляется функцией playCurrentAudio с учетом URL-параметра
+                // Автоматическое воспроизведение при загрузке страницы
                 if (newsData.length > 0) {
                      playCurrentAudio();
                 }
+
+                // Запускаем периодическую проверку обновлений каждые 5 секунд
+                setInterval(checkForUpdates, 5000); 
             });
         </script>
     </body>
