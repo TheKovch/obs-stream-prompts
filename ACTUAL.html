@@ -9,32 +9,32 @@
             body { 
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
                 margin: 0; 
-                background-color: #000000; /* Pure black background */
-                color: #e0e0e0; /* Light text */
+                background-color: #000000; /* Чисто черный фон */
+                color: #e0e0e0; /* Светлый текст */
                 display: flex;
                 flex-direction: column; 
-                justify-content: flex-start; /* Align content to the top */
-                align-items: center; /* Center horizontally */
-                min-height: 100vh; /* Full viewport height */
-                width: 100vw; /* Full viewport width */
-                padding: 0; /* Remove body padding */
+                justify-content: flex-start; /* Выравнивание содержимого к верху */
+                align-items: center; /* Центрирование по горизонтали */
+                min-height: 100vh; /* Высота на весь экран */
+                width: 100vw; /* Ширина на весь экран */
+                padding: 0; /* Убираем padding у body */
                 box-sizing: border-box; 
-                overflow: hidden; /* Prevent scrollbars */
+                overflow: hidden; /* Предотвращаем скроллбары */
             }
             .container { 
                 max-width: 98vw; 
                 width: 98vw;
                 height: 98vh; 
                 max-height: 98vh;
-                background-color: transparent; /* No container background */
-                padding: 5px; /* Minimal padding */
-                border-radius: 0; /* No border-radius */
-                box-shadow: none; /* No shadow */
-                border: none; /* No border */
+                background-color: transparent; /* Убираем фон контейнера */
+                padding: 5px; /* Минимальный отступ */
+                border-radius: 0; /* Без скругления */
+                box-shadow: none; /* Без тени */
+                border: none; /* Без рамки */
                 text-align: left; 
                 display: flex;
                 flex-direction: column;
-                justify-content: flex-start; /* Start from top */
+                justify-content: flex-start; /* Начинаем сверху */
                 align-items: stretch; 
                 box-sizing: border-box; 
             }
@@ -42,51 +42,51 @@
                 flex-grow: 1; 
                 display: flex;
                 flex-direction: column;
-                justify-content: flex-start; /* Align news content to the top */
+                justify-content: flex-start; /* Выравниваем содержимое новости к верху */
                 border: none; 
                 background-color: transparent; 
-                padding: 0; /* No padding for news item */
+                padding: 0; /* Без отступа для новости */
                 box-shadow: none; 
             }
             .article-summary h2 { 
                 color: #00ffff; 
-                font-size: 1.6em; /* Reduced by 20% from 2em (now 1.6em) */
+                font-size: 1.6em; 
                 text-align: center; 
                 margin-top: 0; 
-                margin-bottom: 3px; /* Reduced space between title and summary */
+                margin-bottom: 3px; 
                 text-shadow: 0 0 8px rgba(0,255,255,0.7); 
                 line-height: 1.1; 
             }
             .article-summary p { 
-                margin-bottom: 2px; /* As close as possible */
+                margin-bottom: 2px; 
                 line-height: 1.2; 
-                font-size: 1.08em; /* Reduced by 20% from 1.35em (now 1.08em) */
+                font-size: 1.08em; 
                 text-align: center; 
                 color: #f0f0f0; 
             }
-            /* Specific for summary - attempt to fit in 2 lines, truncating excess */
+            /* Специфично для пересказа - попытка уместить в 2 строки, обрезая лишнее */
             .article-summary p.summary {
-                max-height: 2.4em; /* Approximating 2 lines (2 * line-height 1.2) */
+                max-height: 2.4em; 
                 overflow: hidden;
                 text-overflow: ellipsis; 
                 display: -webkit-box;
-                -webkit-line-clamp: 2; /* Limit to 2 lines */
+                -webkit-line-clamp: 2; 
                 -webkit-box-orient: vertical;
-                margin-bottom: 6px; /* Space between summary and questions */
+                margin-bottom: 6px; 
             }
             .questions-container {
                 display: flex;
                 flex-wrap: wrap; 
                 justify-content: center; 
-                gap: 6px; /* Small gap between questions */
-                margin-top: 4px; /* Space from summary */
+                gap: 6px; 
+                margin-top: 4px; 
             }
             .question-box {
                 background-color: rgba(0, 100, 200, 0.2); 
                 border-radius: 8px; 
-                padding: 7px 12px; /* Reduced padding */
+                padding: 7px 12px; 
                 color: #ffffff; 
-                font-size: 0.96em; /* Reduced by 20% from 1.2em */
+                font-size: 0.96em; 
                 line-height: 1.3;
                 text-align: center;
                 flex-shrink: 0; 
@@ -141,7 +141,7 @@
                 transform: translateY(-1px);
             }
             #stop-button {
-                background-color: #dc3545; /* Red color for stop button */
+                background-color: #dc3545; /* Красный цвет для кнопки "Стоп" */
             }
             #stop-button:hover {
                 background-color: #bd2130;
@@ -149,15 +149,15 @@
             .checkbox-control {
                 display: flex;
                 align-items: center;
-                margin-top: 5px; /* Margin between buttons and checkbox */
+                margin-top: 5px; 
                 color: #f0f0f0;
-                font-size: 0.85em; /* Slightly reduced font size for checkbox */
+                font-size: 0.85em; 
             }
             .checkbox-control input[type="checkbox"] {
                 margin-right: 5px;
-                transform: scale(1.1); /* Slightly enlarge checkbox */
+                transform: scale(1.1); 
             }
-            /* Removed #timer-display styles as the timer element is removed */
+            /* Стиль для таймера удален */
         </style>
     </head>
     <body>
@@ -168,11 +168,12 @@
                 <input type="checkbox" id="mute-checkbox">
                 <label for="mute-checkbox">Отключить звук</label>
             </div>
+            <!-- Элемент таймера удален -->
         </div>
 
         <div class="container">
             <div id="news-content">
-                <!-- News content will be inserted here by JavaScript -->
+                <!-- Контент новости будет вставлен сюда JavaScript'ом -->
             </div>
         </div>
         
@@ -180,7 +181,7 @@
         <audio id="news-audio" preload="auto"></audio>
 
         <script>
-            const newsData = [{"title": "MRC Studio открыла предзаказ на 220-сантиметровую статую Луффи в пятом гире из аниме One Piece", "link": "https://ixbt.games/news/2025/06/05/mrc-studio-otkryla-predzakaz-na-220-santimetrovuyu-statuyu-luffi-v-pyatom-gire-iz-anime-one-piece.html", "summary": "Компания MRC Studio открыла предзаказ на новую гигантскую (до 2.2 м) статую Монки Д. Луффи в пятом гире из One Piece, которая может стоить до $3235, а выпуск ожидается в 2026 году.", "question1": "Кто готов выложить $3000 за статую Луффи?", "question2": "Как вам сам 5-й гир Луффи?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
+            const newsData = [{"title": "«Чужие» добрались до Земли. Вышел первый трейлер сериала Alien: Earth", "link": "https://ixbt.games/news/2025/06/05/cuzie-dobralis-do-zemli-vysel-pervyi-treiler-seriala-alien-earth.html", "summary": "FX и Hulu показали трейлер сериала «Чужой: Земля» — первого телепроекта во вселенной «Чужих», который станет приквелом к оригинальному фильму и стартует 12 августа. Сюжет развернется на Земле за два года до событий фильма, обещая катастрофу с ксеноморфами и корпоративное противостояние.", "question1": "Чужой на Земле: это интригует или уже перебор?", "question2": "Приквел к классике: нужен ли он вселенной Чужих?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
             let currentIndex = 0; 
             const newsContentDiv = document.getElementById('news-content');
             const refreshButton = document.getElementById('refresh-button'); 
@@ -189,6 +190,8 @@
             const newsAudio = document.getElementById('news-audio'); 
 
             let currentAudioUrl = '';
+
+            // Функции updateTimer, refreshInterval и timeLeft удалены
 
             function displayNews(index) {
                 // Останавливаем текущее воспроизведение перед сменой новости
@@ -221,25 +224,33 @@
                 stopButton.style.display = 'block'; 
                 muteCheckbox.style.display = 'inline-block'; 
                 
-                // Add a cache-busting parameter to the audio URL
+                // Добавляем параметр для обхода кэша к URL аудио
                 currentAudioUrl = item.audio_url + '?v=' + new Date().getTime(); 
                 newsAudio.src = currentAudioUrl;
-                newsAudio.load(); 
-                console.log("Audio source set to:", currentAudioUrl);
+                newsAudio.load(); // Загружаем аудио
+                console.log("Источник аудио установлен на:", currentAudioUrl);
             }
 
             function playCurrentAudio() {
-                if (currentAudioUrl && !muteCheckbox.checked) {
-                    // Добавляем небольшую задержку перед воспроизведением
+                const urlParams = new URLSearchParams(window.location.search);
+                const autoplayAudioParam = urlParams.get('autoplay_audio'); // Получаем параметр
+
+                // Если muteCheckbox включен ИЛИ autoplay_audio=false в URL, то не воспроизводим
+                if (muteCheckbox.checked || autoplayAudioParam === 'false') {
+                    console.log("Воспроизведение аудио пропущено из-за флажка отключения звука или параметра URL.");
+                    stopCurrentAudio(); // Гарантируем остановку
+                    return;
+                }
+
+                if (currentAudioUrl) {
+                    // Задержка в 1 секунду для автоматического воспроизведения
                     setTimeout(() => {
                         newsAudio.play().catch(error => {
-                            console.error("Error playing audio:", error);
+                            console.error("Ошибка воспроизведения аудио:", error);
                         });
-                    }, 200); // Задержка 200 мс
-                } else if (muteCheckbox.checked) {
-                    console.log("Audio playback skipped because mute checkbox is enabled.");
+                    }, 1000); // Задержка 1000 мс = 1 секунда
                 } else {
-                    console.warn("No audio URL to play.");
+                    console.warn("Нет URL аудио для воспроизведения.");
                 }
             }
 
@@ -247,7 +258,7 @@
                 if (newsAudio.paused === false) {
                     newsAudio.pause();
                     newsAudio.currentTime = 0; 
-                    console.log("Audio stopped.");
+                    console.log("Аудио остановлено.");
                 }
             }
 
@@ -262,7 +273,7 @@
                 if (muteCheckbox.checked) {
                     stopCurrentAudio(); 
                 } else {
-                    // playCurrentAudio(); // Optional: uncomment if you want auto-play when mute is unchecked
+                    // playCurrentAudio(); // Опционально: раскомментируйте, если хотите автовоспроизведение при снятии мута
                 }
             });
 
@@ -271,6 +282,7 @@
                 displayNews(0); 
                 
                 // Автоматическое воспроизведение при загрузке страницы, если звук не отключен
+                // Теперь это управляется функцией playCurrentAudio с учетом URL-параметра
                 if (newsData.length > 0) {
                      playCurrentAudio();
                 }
