@@ -157,12 +157,7 @@
                 margin-right: 5px;
                 transform: scale(1.1); /* Slightly enlarge checkbox */
             }
-            #timer-display {
-                font-size: 1.0em; 
-                color: #ffeb3b; 
-                font-weight: bold;
-                text-shadow: 0 0 4px rgba(255,235,59,0.7); 
-            }
+            /* Removed #timer-display styles as the timer element is removed */
         </style>
     </head>
     <body>
@@ -173,7 +168,7 @@
                 <input type="checkbox" id="mute-checkbox">
                 <label for="mute-checkbox">Отключить звук</label>
             </div>
-            <div id="timer-display"></div>
+            <!-- Removed timer display element -->
         </div>
 
         <div class="container">
@@ -186,27 +181,18 @@
         <audio id="news-audio" preload="auto"></audio>
 
         <script>
-            const newsData = [{"title": "MRC Studio открыла предзаказ на 220-сантиметровую статую Луффи в пятом гире из аниме One Piece", "link": "https://ixbt.games/news/2025/06/05/mrc-studio-otkryla-predzakaz-na-220-santimetrovuyu-statuyu-luffi-v-pyatom-gire-iz-anime-one-piece.html", "summary": "Компания MRC Studio анонсировала и открыла предзаказ на новую статую Монки Д. Луффи в пятом гире из One Piece, с различными масштабами и ценами до $3382, релиз запланирован на начало 2026 года.", "question1": "Заплатили бы столько за фигурку?", "question2": "Поставил бы такую 2-метровую статую дома?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
+            const newsData = [{"title": "MRC Studio открыла предзаказ на 220-сантиметровую статую Луффи в пятом гире из аниме One Piece", "link": "https://ixbt.games/news/2025/06/05/mrc-studio-otkryla-predzakaz-na-220-santimetrovuyu-statuyu-luffi-v-pyatom-gire-iz-anime-one-piece.html", "summary": "MRC Studio открыла предзаказ на новую гигантскую статую Монки Д. Луффи в его пятом гире из One Piece, с версией 1/1 за почти $3400. Статуя детализирует пробужденную силу Луффи и выйдет в начале 2026 года.", "question1": "Заплатить $3400 за статую: это адекватно?", "question2": "Фанаты One Piece — самые щедрые?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
             let currentIndex = 0; 
             const newsContentDiv = document.getElementById('news-content');
             const refreshButton = document.getElementById('refresh-button'); 
             const stopButton = document.getElementById('stop-button'); 
             const muteCheckbox = document.getElementById('mute-checkbox'); 
-            const timerDisplay = document.getElementById('timer-display');
             const newsAudio = document.getElementById('news-audio'); 
-            const refreshInterval = 30 * 1000; 
-            let timeLeft = 30; 
-            // autoRefreshIntervalId is no longer needed as auto-refresh is removed
+            // Removed refreshInterval and timeLeft variables as timer is removed
 
             let currentAudioUrl = '';
 
-            function updateTimer() {
-                timerDisplay.textContent = `${timeLeft}`; 
-                timeLeft--;
-                if (timeLeft < 0) {
-                    timeLeft = 30; 
-                }
-            }
+            // Removed updateTimer function as timer is removed
 
             function displayNews(index) {
                 // Stop current playback before changing news
@@ -283,8 +269,8 @@
 
             document.addEventListener('DOMContentLoaded', () => {
                 displayNews(0); 
-                updateTimer(); 
-                setInterval(updateTimer, 1000); 
+                // Removed timer update interval
+                // setInterval(updateTimer, 1000); 
 
                 // --- AUTO-REFRESH REMOVED ---
                 
