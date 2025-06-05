@@ -123,6 +123,13 @@
                 flex-direction: column;
                 align-items: flex-end;
                 z-index: 10;
+                gap: 5px; /* Добавлено для отступа между элементами */
+            }
+            .countdown-text {
+                font-size: 0.85em; /* Меньший шрифт для таймера */
+                color: #00aaff; /* Голубой цвет */
+                text-shadow: 0 0 5px rgba(0,170,255,0.7); /* Легкое свечение */
+                margin-bottom: 3px; /* Отступ от кнопок */
             }
             button {
                 padding: 8px 18px; 
@@ -161,6 +168,7 @@
     </head>
     <body>
         <div class="top-right-controls">
+            <span id="countdown-timer" class="countdown-text"></span>
             <button id="refresh-button">Обновить</button>
             <button id="stop-button">Стоп</button>
             <div class="checkbox-control">
@@ -180,19 +188,34 @@
 
         <script>
             // Текущая временная метка генерации этой страницы
-            const currentGenerationTimestamp = 1749145369; 
+            const currentGenerationTimestamp = 1749146056; 
             const githubPagesBaseUrl = "https://TheKovch.github.io/obs-stream-prompts/";
-            const latestUpdateFileUrl = githubPagesBaseUrl + 'latest_update.txt'; // URL файла с последней временной меткой
+            // Динамически передаем имя файла latest_update.txt из Python
+            const latestUpdateFileUrl = "https://TheKovch.github.io/obs-stream-prompts/latest_update.20250605.txt"; 
 
-            const newsData = [{"title": "«Худший ААА-порт» Batman Arkham Knight раскрылся на Switch 2 — игра стала работать значительно лучше", "link": "https://ixbt.games/news/2025/06/05/xudsii-aaa-port-batman-arkham-knight-raskrylsya-na-switch-2-igra-stala-rabotat-znacitelno-lucse.html", "summary": "Batman Arkham Knight демонстрирует стабильные 30 FPS на Switch 2 благодаря мощному железу, что исправляет проблемы Switch 1, но мелкие графические баги и редкие вылеты все еще присутствуют.", "question1": "30 FPS для Switch 2 — это победа или компромисс?", "question2": "Важно ли, что старые игры тянут на Switch 2, или ждете только новые?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
+            const newsData = [{"title": "Исполнитель роли Артура из Red Dead Redemption 2 рассказал, какой бы совет дал актёрам Джейсона и Лусии из GTA 6", "link": "https://ixbt.games/news/2025/06/05/ispolnitel-roli-artura-iz-red-dead-redemption-2-rasskazal-kakoi-by-sovet-dal-aktyoram-dzeisona-i-lyu.html", "summary": "Роджер Кларк, звезда RDR2, дал совет актерам GTA 6: не поддаваться давлению хайпа, доверять Rockstar и позволить игре говорить за себя. При этом он подчеркнул, что актеры не должны забывать заявить о себе.", "question1": "Насколько оправданно такое давление на актеров GTA 6?", "question2": "Стоит ли актерам пиарить себя или их должна прославить игра?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
             let currentIndex = 0; 
             const newsContentDiv = document.getElementById('news-content');
             const refreshButton = document.getElementById('refresh-button'); 
             const stopButton = document.getElementById('stop-button'); 
             const muteCheckbox = document.getElementById('mute-checkbox'); 
             const newsAudio = document.getElementById('news-audio'); 
+            const countdownTimerSpan = document.getElementById('countdown-timer');
 
             let currentAudioUrl = '';
+
+            // Константа для интервала проверки (должна совпадать с Python-скриптом, 5 секунд)
+            const CHECK_INTERVAL_SECONDS = 5; 
+            let countdown = CHECK_INTERVAL_SECONDS; // Начальное значение таймера
+
+            function updateCountdownDisplay() {
+                countdownTimerSpan.textContent = `Обновление через: ${countdown} с`;
+                countdown--;
+                if (countdown < 0) {
+                    countdown = CHECK_INTERVAL_SECONDS; // Сброс таймера для следующего цикла
+                }
+            }
+
 
             function displayNews(index) {
                 // Останавливаем текущее воспроизведение перед сменой новости
@@ -311,7 +334,11 @@
                 }
 
                 // Запускаем периодическую проверку обновлений каждые 5 секунд
-                setInterval(checkForUpdates, 5000); 
+                setInterval(checkForUpdates, CHECK_INTERVAL_SECONDS * 1000); 
+
+                // Запускаем периодическое обновление таймера обратного отсчета (каждую секунду)
+                updateCountdownDisplay(); // Вызываем один раз сразу для инициализации
+                setInterval(updateCountdownDisplay, 1000);
             });
         </script>
     </body>
