@@ -192,12 +192,11 @@
 
         <script>
             // Текущая временная метка генерации этой страницы
-            const currentGenerationTimestamp = 1749149141; 
-            const githubPagesBaseUrl = "https://TheKovch.github.io/obs-stream-prompts/";
-            // Динамически передаем имя файла latest_update.txt из Python
-            const latestUpdateFileUrl = "https://TheKovch.github.io/obs-stream-prompts/latest_update.txt"; 
+            const currentGenerationTimestamp = 1749151534; 
+            // URL файла с последней временной меткой - теперь относительный
+            const latestUpdateFileUrl = 'latest_update.txt'; 
 
-            const newsData = [{"title": "Dune Awakening установила 2 рекорда — стала худшей и самой популярной игрой издателя Conan Exiles", "link": "https://ixbt.games/news/2025/06/05/dune-awakening-ustanovila-2-rekorda-stala-xudsei-igroi-izdatelya-conan-exiles-i-samoi-populyarnoi.html", "summary": "Ранний доступ к ММО Dune Awakening стартовал с рекордным онлайном, но игроки столкнулись с множеством технических проблем, что привело к худшему рейтингу среди всех игр Funcom.", "question1": "Стоит ли запускать игру в таком состоянии?", "question2": "Онлайн важнее рейтинга?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
+            const newsData = [{"title": "Dune Awakening установила 2 рекорда — стала худшей и самой популярной игрой издателя Conan Exiles", "link": "https://ixbt.games/news/2025/06/05/dune-awakening-ustanovila-2-rekorda-stala-xudsei-igroi-izdatelya-conan-exiles-i-samoi-populyarnoi.html", "summary": "Ранний доступ к Dune Awakening стартовал с рекордным онлайном для издателя Funcom, но игра страдает от многочисленных технических проблем, что привело к худшему рейтингу проекта.", "question1": "Онлайн или качество – что важнее для игры?", "question2": "Зачем вообще выпускать \"сырые\" игры?", "audio_url": "news_audio_0.mp3"}]; 
             let currentIndex = 0; 
             const newsContentDiv = document.getElementById('news-content');
             const refreshButton = document.getElementById('refresh-button'); 
@@ -208,21 +207,19 @@
 
             let currentAudioUrl = '';
 
-            // Константа для интервала проверки (должна совпадать с Python-скриптом, 5 секунд)
+            // Константа для интервала проверки (5 секунд)
             const CHECK_INTERVAL_SECONDS = 5; 
-            let countdown = CHECK_INTERVAL_SECONDS; // Начальное значение таймера
+            let countdown = CHECK_INTERVAL_SECONDS; 
 
             function updateCountdownDisplay() {
                 countdownTimerSpan.textContent = `Обновление через: ${countdown} с`;
                 countdown--;
                 if (countdown < 0) {
-                    countdown = CHECK_INTERVAL_SECONDS; // Сброс таймера для следующего цикла
+                    countdown = CHECK_INTERVAL_SECONDS; 
                 }
             }
 
-
             function displayNews(index) {
-                // Останавливаем текущее воспроизведение перед сменой новости
                 stopCurrentAudio();
 
                 newsContentDiv.innerHTML = ''; 
@@ -252,10 +249,10 @@
                 stopButton.style.display = 'block'; 
                 muteCheckbox.style.display = 'inline-block'; 
                 
-                // Добавляем параметр для обхода кэша к URL аудио
+                # Audio URL теперь является относительным путем к файлу, расположенному в той же директории Netlify
                 currentAudioUrl = item.audio_url + '?v=' + new Date().getTime(); 
                 newsAudio.src = currentAudioUrl;
-                newsAudio.load(); // Загружаем аудио
+                newsAudio.load(); 
                 console.log("Источник аудио установлен на:", currentAudioUrl);
             }
 
@@ -263,7 +260,6 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const autoplayAudioParam = urlParams.get('autoplay_audio'); 
 
-                // Если muteCheckbox включен ИЛИ autoplay_audio=false в URL, то не воспроизводим
                 if (muteCheckbox.checked || autoplayAudioParam === 'false') {
                     console.log("Воспроизведение аудио пропущено из-за флажка отключения звука или параметра URL.");
                     stopCurrentAudio(); 
@@ -271,12 +267,11 @@
                 }
 
                 if (currentAudioUrl) {
-                    // Задержка в 1 секунду для автоматического воспроизведения
                     setTimeout(() => {
                         newsAudio.play().catch(error => {
                             console.error("Ошибка воспроизведения аудио:", error);
                         });
-                    }, 1000); // Задержка 1000 мс = 1 секунда
+                    }, 1000); 
                 } else {
                     console.warn("Нет URL аудио для воспроизведения.");
                 }
@@ -292,7 +287,6 @@
 
             refreshButton.addEventListener('click', () => {
                 stopCurrentAudio(); 
-                // Принудительная перезагрузка страницы с новым кэш-бастером
                 window.location.href = window.location.pathname + '?v=' + new Date().getTime();
             });
 
@@ -301,15 +295,12 @@
             muteCheckbox.addEventListener('change', () => {
                 if (muteCheckbox.checked) {
                     stopCurrentAudio(); 
-                } else {
-                    // Опционально: можно добавить playCurrentAudio(); здесь, если нужно автовоспроизведение при снятии мута
-                    // playCurrentAudio(); 
                 }
             });
 
-            // --- Механизм автоматической проверки обновлений ---
+            # --- Механизм автоматической проверки обновлений ---
             function checkForUpdates() {
-                fetch(latestUpdateFileUrl + '?t=' + new Date().getTime()) // Добавляем кэш-бастер к запросу файла
+                fetch(latestUpdateFileUrl + '?t=' + new Date().getTime()) 
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`Ошибка HTTP! Статус: ${response.status}`);
@@ -322,7 +313,6 @@
 
                         if (serverTimestamp > currentGenerationTimestamp) {
                             console.log("Обнаружено новое обновление. Перезагрузка страницы...");
-                            // Принудительная перезагрузка страницы с новым кэш-бастером
                             window.location.href = window.location.pathname + '?v=' + new Date().getTime(); 
                         }
                     })
@@ -334,16 +324,13 @@
             document.addEventListener('DOMContentLoaded', () => {
                 displayNews(0); 
                 
-                // Автоматическое воспроизведение при загрузке страницы
                 if (newsData.length > 0) {
                      playCurrentAudio();
                 }
 
-                // Запускаем периодическую проверку обновлений каждые 5 секунд
                 setInterval(checkForUpdates, CHECK_INTERVAL_SECONDS * 1000); 
 
-                // Запускаем периодическое обновление таймера обратного отсчета (каждую секунду)
-                updateCountdownDisplay(); // Вызываем один раз сразу для инициализации
+                updateCountdownDisplay(); 
                 setInterval(updateCountdownDisplay, 1000);
             });
         </script>
