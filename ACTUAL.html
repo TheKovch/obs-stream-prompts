@@ -50,43 +50,43 @@
             }
             .article-summary h2 { 
                 color: #00ffff; 
-                font-size: 1.6em; /* Уменьшен на 20% от 2em (теперь 1.6em) */
+                font-size: 1.6em; /* Reduced by 20% from 2em (now 1.6em) */
                 text-align: center; 
                 margin-top: 0; 
-                margin-bottom: 3px; /* Сокращаем отступ между заголовком и пересказом */
+                margin-bottom: 3px; /* Reduced space between title and summary */
                 text-shadow: 0 0 8px rgba(0,255,255,0.7); 
                 line-height: 1.1; 
             }
             .article-summary p { 
-                margin-bottom: 2px; /* Максимально близко */
+                margin-bottom: 2px; /* As close as possible */
                 line-height: 1.2; 
-                font-size: 1.08em; /* Уменьшен на 20% от 1.35em (теперь 1.08em) */
+                font-size: 1.08em; /* Reduced by 20% from 1.35em (now 1.08em) */
                 text-align: center; 
                 color: #f0f0f0; 
             }
             /* Specific for summary - attempt to fit in 2 lines, truncating excess */
             .article-summary p.summary {
-                max-height: 2.4em; /* Приближаем к 2 строкам (2 * line-height 1.2) */
+                max-height: 2.4em; /* Approximating 2 lines (2 * line-height 1.2) */
                 overflow: hidden;
                 text-overflow: ellipsis; 
                 display: -webkit-box;
                 -webkit-line-clamp: 2; /* Limit to 2 lines */
                 -webkit-box-orient: vertical;
-                margin-bottom: 6px; /* Отступ между пересказом и вопросами */
+                margin-bottom: 6px; /* Space between summary and questions */
             }
             .questions-container {
                 display: flex;
                 flex-wrap: wrap; 
                 justify-content: center; 
-                gap: 6px; /* Небольшой отступ между вопросами */
-                margin-top: 4px; /* Отступ от пересказа */
+                gap: 6px; /* Small gap between questions */
+                margin-top: 4px; /* Space from summary */
             }
             .question-box {
                 background-color: rgba(0, 100, 200, 0.2); 
                 border-radius: 8px; 
-                padding: 7px 12px; /* Уменьшены отступы */
+                padding: 7px 12px; /* Reduced padding */
                 color: #ffffff; 
-                font-size: 0.96em; /* Уменьшен на 20% от 1.2em */
+                font-size: 0.96em; /* Reduced by 20% from 1.2em */
                 line-height: 1.3;
                 text-align: center;
                 flex-shrink: 0; 
@@ -146,6 +146,17 @@
             #stop-button:hover {
                 background-color: #bd2130;
             }
+            .checkbox-control {
+                display: flex;
+                align-items: center;
+                margin-top: 5px; /* Margin between buttons and checkbox */
+                color: #f0f0f0;
+                font-size: 0.85em; /* Slightly reduced font size for checkbox */
+            }
+            .checkbox-control input[type="checkbox"] {
+                margin-right: 5px;
+                transform: scale(1.1); /* Slightly enlarge checkbox */
+            }
             #timer-display {
                 font-size: 1.0em; 
                 color: #ffeb3b; 
@@ -158,6 +169,10 @@
         <div class="top-right-controls">
             <button id="refresh-button">Обновить</button>
             <button id="stop-button">Стоп</button>
+            <div class="checkbox-control">
+                <input type="checkbox" id="mute-checkbox">
+                <label for="mute-checkbox">Отключить звук</label>
+            </div>
             <div id="timer-display"></div>
         </div>
 
@@ -167,21 +182,22 @@
             </div>
         </div>
         
-        <!-- Аудио элемент, который будет воспроизводить MP3 -->
+        <!-- Audio element to play MP3 -->
         <audio id="news-audio" preload="auto"></audio>
 
         <script>
-            const newsData = [{"title": "Игроки не верят, что The Witcher 4 запускали на PS5, авторы Stellar Blade провоцируют моддеров — самое интересное за 4 июня", "link": "https://ixbt.games/news/2025/06/05/igroki-ne-veryat-cto-the-witcher-4-zapuskali-na-ps5-avtory-stellar-blade-provociruyut-modderov-samoe.html", "summary": "Представляем свежий дайджест новостей мировой развлекательной индустрии за прошедший день.", "question1": "Какая новость из мира развлечений вас удивила/зацепила больше всего?", "question2": "Куда, по-вашему, движется вся индустрия развлечений?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
-            let currentIndex = 0; // Всегда 0, так как только 1 новость
+            const newsData = [{"title": "MRC Studio открыла предзаказ на 220-сантиметровую статую Луффи в пятом гире из аниме One Piece", "link": "https://ixbt.games/news/2025/06/05/mrc-studio-otkryla-predzakaz-na-220-santimetrovuyu-statuyu-luffi-v-pyatom-gire-iz-anime-one-piece.html", "summary": "Компания MRC Studio анонсировала и открыла предзаказ на новую статую Монки Д. Луффи в пятом гире из One Piece, с различными масштабами и ценами до $3382, релиз запланирован на начало 2026 года.", "question1": "Заплатили бы столько за фигурку?", "question2": "Поставил бы такую 2-метровую статую дома?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
+            let currentIndex = 0; 
             const newsContentDiv = document.getElementById('news-content');
-            const refreshButton = document.getElementById('refresh-button'); // Обновленная кнопка
-            const stopButton = document.getElementById('stop-button'); // Новая кнопка Стоп
+            const refreshButton = document.getElementById('refresh-button'); 
+            const stopButton = document.getElementById('stop-button'); 
+            const muteCheckbox = document.getElementById('mute-checkbox'); 
             const timerDisplay = document.getElementById('timer-display');
-            const newsAudio = document.getElementById('news-audio'); // Аудио элемент
+            const newsAudio = document.getElementById('news-audio'); 
             const refreshInterval = 30 * 1000; 
             let timeLeft = 30; 
+            // autoRefreshIntervalId is no longer needed as auto-refresh is removed
 
-            // Переменная для хранения URL текущего MP3
             let currentAudioUrl = '';
 
             function updateTimer() {
@@ -193,28 +209,25 @@
             }
 
             function displayNews(index) {
-                // Останавливаем текущее воспроизведение перед сменой новости
-                if (newsAudio.paused === false) {
-                    newsAudio.pause();
-                    newsAudio.currentTime = 0;
-                }
+                // Stop current playback before changing news
+                stopCurrentAudio();
 
                 newsContentDiv.innerHTML = ''; 
                 if (newsData.length === 0) {
                     newsContentDiv.innerHTML = '<p style="text-align: center; color: #aaa;">Не удалось загрузить новости. Нет данных.</p>';
-                    refreshButton.style.display = 'none'; // Скрываем кнопку, если нет новостей
-                    stopButton.style.display = 'none'; // Скрываем кнопку Стоп
+                    refreshButton.style.display = 'none'; 
+                    stopButton.style.display = 'none'; 
+                    muteCheckbox.style.display = 'none'; 
                     currentAudioUrl = ''; 
                     return;
                 }
                 
-                // Всегда отображаем только первую новость (индекс 0)
                 const item = newsData[0]; 
                 const div = document.createElement('div');
                 div.className = 'article-summary';
                 div.innerHTML = `
                     <h2>${item.title}</h2>
-                    <p class="summary"><span class="label">Пересказ:</span> ${item.summary}</p>
+                    <p class="summary">${item.summary}</p>
                     <div class="questions-container">
                         <div class="question-box">${item.question1}</div>
                         <div class="question-box">${item.question2}</div>
@@ -222,57 +235,60 @@
                 `;
                 newsContentDiv.appendChild(div);
                 
-                refreshButton.style.display = 'block'; // Кнопка Обновить всегда видна
-                stopButton.style.display = 'block'; // Кнопка Стоп всегда видна
+                refreshButton.style.display = 'block'; 
+                stopButton.style.display = 'block'; 
+                muteCheckbox.style.display = 'inline-block'; 
                 
-                // Устанавливаем новый источник аудио
                 currentAudioUrl = item.audio_url; 
                 newsAudio.src = currentAudioUrl;
                 newsAudio.load(); 
                 console.log("Audio source set to:", currentAudioUrl);
             }
 
-            // Функция для воспроизведения текущего аудио
             function playCurrentAudio() {
-                if (currentAudioUrl) {
+                if (currentAudioUrl && !muteCheckbox.checked) {
                     newsAudio.play().catch(error => {
                         console.error("Error playing audio:", error);
                     });
+                } else if (muteCheckbox.checked) {
+                    console.log("Audio playback skipped because mute checkbox is enabled.");
                 } else {
                     console.warn("No audio URL to play.");
                 }
             }
 
-            // Функция для остановки аудио
             function stopCurrentAudio() {
                 if (newsAudio.paused === false) {
                     newsAudio.pause();
-                    newsAudio.currentTime = 0; // Сбрасываем к началу
+                    newsAudio.currentTime = 0; 
                     console.log("Audio stopped.");
                 }
             }
 
-            // Обработчик события для кнопки "Обновить"
             refreshButton.addEventListener('click', () => {
-                stopCurrentAudio(); // Останавливаем текущую озвучку перед обновлением
-                location.reload(); // Перезагружаем страницу
+                stopCurrentAudio(); 
+                location.reload(); 
             });
 
-            // Обработчик события для кнопки "Стоп"
             stopButton.addEventListener('click', stopCurrentAudio);
 
+            muteCheckbox.addEventListener('change', () => {
+                if (muteCheckbox.checked) {
+                    stopCurrentAudio(); 
+                } else {
+                    // playCurrentAudio(); // Optional: uncomment if you want auto-play when mute is unchecked
+                }
+            });
+
+
             document.addEventListener('DOMContentLoaded', () => {
-                displayNews(0); // Всегда отображаем первую новость
+                displayNews(0); 
                 updateTimer(); 
                 setInterval(updateTimer, 1000); 
 
-                // Автоматическая перезагрузка страницы по таймеру
-                setInterval(() => {
-                    console.log("Автоматическая перезагрузка страницы для обновления контента...");
-                    location.reload(); 
-                }, refreshInterval);
+                // --- AUTO-REFRESH REMOVED ---
                 
-                // Автоматическое воспроизведение при загрузке страницы
+                // Auto-play on page load if sound is not muted
                 if (newsData.length > 0) {
                      playCurrentAudio();
                 }
