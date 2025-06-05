@@ -50,43 +50,43 @@
             }
             .article-summary h2 { 
                 color: #00ffff; 
-                font-size: 2em; 
+                font-size: 1.6em; /* Уменьшен на 20% от 2em (теперь 1.6em) */
                 text-align: center; 
                 margin-top: 0; 
-                margin-bottom: 5px; 
+                margin-bottom: 3px; /* Сокращаем отступ между заголовком и пересказом */
                 text-shadow: 0 0 8px rgba(0,255,255,0.7); 
                 line-height: 1.1; 
             }
             .article-summary p { 
-                margin-bottom: 3px; 
+                margin-bottom: 2px; /* Максимально близко */
                 line-height: 1.2; 
-                font-size: 1.35em; 
+                font-size: 1.08em; /* Уменьшен на 20% от 1.35em (теперь 1.08em) */
                 text-align: center; 
                 color: #f0f0f0; 
             }
             /* Specific for summary - attempt to fit in 2 lines, truncating excess */
             .article-summary p.summary {
-                max-height: 2.6em; /* Approx 2 lines (2 * line-height 1.3) */
+                max-height: 2.4em; /* Приближаем к 2 строкам (2 * line-height 1.2) */
                 overflow: hidden;
                 text-overflow: ellipsis; 
                 display: -webkit-box;
                 -webkit-line-clamp: 2; /* Limit to 2 lines */
                 -webkit-box-orient: vertical;
-                margin-bottom: 8px; 
+                margin-bottom: 6px; /* Отступ между пересказом и вопросами */
             }
             .questions-container {
                 display: flex;
                 flex-wrap: wrap; 
                 justify-content: center; 
-                gap: 8px; 
-                margin-top: 5px; 
+                gap: 6px; /* Небольшой отступ между вопросами */
+                margin-top: 4px; /* Отступ от пересказа */
             }
             .question-box {
                 background-color: rgba(0, 100, 200, 0.2); 
                 border-radius: 8px; 
-                padding: 8px 15px; 
+                padding: 7px 12px; /* Уменьшены отступы */
                 color: #ffffff; 
-                font-size: 1.2em; 
+                font-size: 0.96em; /* Уменьшен на 20% от 1.2em */
                 line-height: 1.3;
                 text-align: center;
                 flex-shrink: 0; 
@@ -140,6 +140,12 @@
                 background-color: #0056b3;
                 transform: translateY(-1px);
             }
+            #stop-button {
+                background-color: #dc3545; /* Red color for stop button */
+            }
+            #stop-button:hover {
+                background-color: #bd2130;
+            }
             #timer-display {
                 font-size: 1.0em; 
                 color: #ffeb3b; 
@@ -150,8 +156,8 @@
     </head>
     <body>
         <div class="top-right-controls">
-            <button id="next-button">Далее</button>
-            <button id="speak-button" style="background-color: #28a745;">Озвучить</button>
+            <button id="refresh-button">Обновить</button>
+            <button id="stop-button">Стоп</button>
             <div id="timer-display"></div>
         </div>
 
@@ -160,32 +166,23 @@
                 <!-- News content will be inserted here by JavaScript -->
             </div>
         </div>
+        
+        <!-- Аудио элемент, который будет воспроизводить MP3 -->
+        <audio id="news-audio" preload="auto"></audio>
 
         <script>
-            const newsData = [{"title": "Игроки не верят, что The Witcher 4 запускали на PS5, авторы Stellar Blade провоцируют моддеров — самое интересное за 4 июня", "link": "https://ixbt.games/news/2025/06/05/igroki-ne-veryat-cto-the-witcher-4-zapuskali-na-ps5-avtory-stellar-blade-provociruyut-modderov-samoe.html", "summary": "Этот дайджест расскажет о самых актуальных новостях мировой развлекательной индустрии за вчера, а на превью у нас — кадр из The Witcher 4.", "question1": "The Witcher 4: ждёте или уже страшно?", "question2": "Развлекательная индустрия: больше прорывов или провалов?"}, {"title": "12 июня для Helldivers 2 выйдет новый премиальный варбонд с оружием и экипировкой", "link": "https://ixbt.games/news/2025/06/05/12-iyunya-dlya-helldivers-2-novyi-premialnyi-varbond-s-oruziem-i-ekipirovkoi.html", "summary": "12 июня в Helldivers 2 выходит новый премиальный варбонд \"Force of Law\" с косметикой. Его стоимость составит 1000 супер-кредитов, которые можно купить за реальные деньги или заработать в игре.", "question1": "Будете фармить или сразу купите новый варбонд?", "question2": "Считаете такую монетизацию честной или это очередной донатный путь?"}, {"title": "Anbernic опубликовала обзорный трейлер с распаковкой портативной ретро-консоли RG35XXPro", "link": "https://ixbt.games/news/2025/06/05/anbernic-opublikovala-obzornyi-treiler-s-raspakovkoi-portativnoi-retro-konsoli-rg35xxpro.html", "summary": "Anbernic представила новую портативную ретро-консоль RG35XXPro, поддерживающую более 30 игровых платформ и даже стриминг современных игр. По слухам, её предзаказ откроется в июне 2025 года по цене от $44.99.", "question1": "Ждать год за ретро-приставку – это нормально?", "question2": "Будете стримить AAA-игры на такой портативке?"}, {"title": "Команда Dota 2 победила, несмотря на уничтоженный трон", "link": "https://ixbt.games/news/2025/06/05/komanda-dota-2-pobedila-nesmotrya-na-unictozennyi-tron.html", "summary": "На квалификации The International 2025 команда eSpoiled написала \"GG\" в матче против Nemiga Gaming, но её крипы успели разрушить трон Nemiga до завершения отсчета, что привело к автоматической победе eSpoiled; однако судья отменил это решение, присудив победу Nemiga.", "question1": "Судья поступил справедливо, отменив автопобеду?", "question2": "Что важнее: признание поражения или разрушенный трон?"}, {"title": "В Path of Exile 2 изменят систему дропа уникальных предметов. Появились тизеры новых вещей", "link": "https://ixbt.games/news/2025/06/05/v-path-of-exile-2-izmenyat-sistemu-dropa-unikalnyx-predmetov.html", "summary": "В Path of Exile 2 с обновлением 0.2.1 значительно переработают систему лута: «мифические» предметы, включая Headhunter, станут выпадать чаще, а их редкость больше не будет зависеть от класса предмета. Разработчики хотят сделать уникальные вещи более доступными.", "question1": "Доступный Headhunter — это хорошо?", "question2": "Потеряют ли уникальные вещи свою ценность?"}, {"title": "Ремастер TES 4 Oblivion получил первый патч 1.1, но пока лишь в бете. Bethesda услышала отзывы игроков", "link": "https://ixbt.games/news/2025/06/05/remaster-tes-4-oblivion-polucil-pervyi-patc-11-bethesda-uslysala-otzyvy-igrokov.html", "summary": "Bethesda наконец-то объявила о бета-тесте патча 1.1 для ремастера The Elder Scrolls 4 Oblivion, который исправляет многочисленные баги, на которые жаловались игроки с апреля.", "question1": "Почему Bethesda не выпускает игры сразу готовыми?", "question2": "Моддеры или Bethesda – кто *действительно* чинит Oblivion?"}, {"title": "Состоялся глобальный релиз Etheria: Restart — конкурента Honkai: Star Rail от авторов Torchlight: Infinite", "link": "https://ixbt.games/news/2025/06/05/sostoyalsya-reliz-etheria-restart-konkurenta-honkai-star-rail-ot-avtorov-torchlight-infinite.html", "summary": "Новая аниме-гача RPG Etheria: Restart от XD Games вышла на мобильных устройствах и скоро появится в Steam, позиционируя себя как прямого конкурента Honkai Star Rail.", "question1": "HSR, подвинься? Или очередной клон?", "question2": "Готовы к новой гаче или уже перебор?"}, {"title": "Инсайдер раскрыл бесплатную игру из раздачи Epic Games Store. Ожидается Deathloop — шутер от авторов Dishonored", "link": "https://ixbt.games/news/2025/06/05/insaider-raskryl-besplatnuyu-igru-iz-razdaci-epic-games-store-ozidaetsya-deathloop-suter-ot-avtorov-.html", "summary": "Epic Games Store готовятся раздать крупный проект Deathloop от Arkane Studios — шутер о временной петле.", "question1": "Готовы ли вы ради бесплатной игры установить Epic Games Store?", "question2": "Считаете ли вы, что бесплатные игры обесцениваются?"}, {"title": "Saber показала новые машины для RoadCraft — технологичный симулятор получил дорожную карту до сентября 2025", "link": "https://ixbt.games/news/2025/06/05/saber-pokazala-novye-masiny-dlya-roadcraft-texnologicnyi-simulyator-polucil-doroznuyu-kartu-do-senty.html", "summary": "Разработчики RoadCraft раскрыли масштабные планы на игру до сентября 2025 года. Нас ждут фоторежим, новые машины, исправления и крупное DLC с бесплатным сложным режимом.", "question1": "Бесплатный хардкор-режим: маркетинг или подарок?", "question2": "А нужен ли фоторежим в гоночной игре?"}, {"title": "Авторы Path of Exile показали новинки дополнения «Секреты Атласа»", "link": "https://ixbt.games/news/2025/06/05/avtory-path-of-exile-pokazali-novinki-dopolneniya-sekrety-atlasa.html", "summary": "Grinding Gear Games возвращается к первой Path of Exile с дополнением «Секреты Атласа», добавляя множество улучшений игровых механик, включая автосбор осколков и улучшенное управление на контроллере.", "question1": "Решат ли эти QoL-изменения главные проблемы игры?", "question2": "Не отвлекут ли эти обновления от Path of Exile 2?"}]; 
-            let currentIndex = 0;
+            const newsData = [{"title": "Игроки не верят, что The Witcher 4 запускали на PS5, авторы Stellar Blade провоцируют моддеров — самое интересное за 4 июня", "link": "https://ixbt.games/news/2025/06/05/igroki-ne-veryat-cto-the-witcher-4-zapuskali-na-ps5-avtory-stellar-blade-provociruyut-modderov-samoe.html", "summary": "Представляем свежий дайджест новостей мировой развлекательной индустрии за прошедший день.", "question1": "Какая новость из мира развлечений вас удивила/зацепила больше всего?", "question2": "Куда, по-вашему, движется вся индустрия развлечений?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
+            let currentIndex = 0; // Всегда 0, так как только 1 новость
             const newsContentDiv = document.getElementById('news-content');
-            const nextButton = document.getElementById('next-button');
-            const speakButton = document.getElementById('speak-button'); 
+            const refreshButton = document.getElementById('refresh-button'); // Обновленная кнопка
+            const stopButton = document.getElementById('stop-button'); // Новая кнопка Стоп
             const timerDisplay = document.getElementById('timer-display');
+            const newsAudio = document.getElementById('news-audio'); // Аудио элемент
             const refreshInterval = 30 * 1000; 
             let timeLeft = 30; 
 
-            let russianVoice = null; 
-
-            function setRussianVoice() {
-                const voices = speechSynthesis.getVoices();
-                russianVoice = voices.find(voice => voice.lang === 'ru-RU');
-                if (!russianVoice) {
-                    console.warn("Russian voice (ru-RU) not found. Using default voice.");
-                }
-            }
-
-            if (speechSynthesis.onvoiceschanged !== undefined) {
-                speechSynthesis.onvoiceschanged = setRussianVoice;
-            }
-            setRussianVoice();
-
+            // Переменная для хранения URL текущего MP3
+            let currentAudioUrl = '';
 
             function updateTimer() {
                 timerDisplay.textContent = `${timeLeft}`; 
@@ -196,95 +193,90 @@
             }
 
             function displayNews(index) {
-                if (speechSynthesis.speaking) {
-                    speechSynthesis.cancel(); 
+                // Останавливаем текущее воспроизведение перед сменой новости
+                if (newsAudio.paused === false) {
+                    newsAudio.pause();
+                    newsAudio.currentTime = 0;
                 }
 
                 newsContentDiv.innerHTML = ''; 
                 if (newsData.length === 0) {
                     newsContentDiv.innerHTML = '<p style="text-align: center; color: #aaa;">Не удалось загрузить новости. Нет данных.</p>';
-                    nextButton.style.display = 'none';
-                    speakButton.style.display = 'none'; 
+                    refreshButton.style.display = 'none'; // Скрываем кнопку, если нет новостей
+                    stopButton.style.display = 'none'; // Скрываем кнопку Стоп
+                    currentAudioUrl = ''; 
                     return;
                 }
                 
-                if (index >= 0 && index < newsData.length) {
-                    const item = newsData[index];
-                    const div = document.createElement('div');
-                    div.className = 'article-summary';
-                    div.innerHTML = `
-                        <h2>${item.title}</h2>
-                        <p class="summary"><span class="label">Пересказ:</span> ${item.summary}</p>
-                        <div class="questions-container">
-                            <div class="question-box">${item.question1}</div>
-                            <div class="question-box">${item.question2}</div>
-                        </div>
-                    `;
-                    newsContentDiv.appendChild(div);
-                    nextButton.style.display = (newsData.length <= 1 || index === newsData.length - 1) ? 'none' : 'block';
-                    speakButton.style.display = 'block'; 
+                // Всегда отображаем только первую новость (индекс 0)
+                const item = newsData[0]; 
+                const div = document.createElement('div');
+                div.className = 'article-summary';
+                div.innerHTML = `
+                    <h2>${item.title}</h2>
+                    <p class="summary"><span class="label">Пересказ:</span> ${item.summary}</p>
+                    <div class="questions-container">
+                        <div class="question-box">${item.question1}</div>
+                        <div class="question-box">${item.question2}</div>
+                    </div>
+                `;
+                newsContentDiv.appendChild(div);
+                
+                refreshButton.style.display = 'block'; // Кнопка Обновить всегда видна
+                stopButton.style.display = 'block'; // Кнопка Стоп всегда видна
+                
+                // Устанавливаем новый источник аудио
+                currentAudioUrl = item.audio_url; 
+                newsAudio.src = currentAudioUrl;
+                newsAudio.load(); 
+                console.log("Audio source set to:", currentAudioUrl);
+            }
+
+            // Функция для воспроизведения текущего аудио
+            function playCurrentAudio() {
+                if (currentAudioUrl) {
+                    newsAudio.play().catch(error => {
+                        console.error("Error playing audio:", error);
+                    });
                 } else {
-                    newsContentDiv.innerHTML = '<p style="text-align: center; color: #aaa;">Ошибка отображения новости.</p>';
-                    nextButton.style.display = 'none';
-                    speakButton.style.display = 'none';
+                    console.warn("No audio URL to play.");
                 }
             }
 
-            function speakCurrentNews() {
-                if ('speechSynthesis' in window) {
-                    if (speechSynthesis.speaking) {
-                        speechSynthesis.cancel(); 
-                    }
-
-                    const currentItem = newsData[currentIndex];
-                    if (!currentItem) return;
-
-                    const textToSpeak = `${currentItem.title}. Пересказ: ${currentItem.summary}. Вопрос первый: ${currentItem.question1}. Вопрос второй: ${currentItem.question2}.`;
-                    const utterance = new SpeechSynthesisUtterance(textToSpeak);
-                    
-                    if (russianVoice) {
-                        utterance.voice = russianVoice;
-                    } else {
-                        utterance.lang = 'ru-RU'; 
-                    }
-                    
-                    utterance.rate = 1; 
-                    utterance.pitch = 1; 
-
-                    speechSynthesis.speak(utterance);
-                    console.log("Speaking:", textToSpeak);
-
-                } else {
-                    console.error("Web Speech API is not supported in this browser.");
-                    // alert("Ваш браузер не поддерживает синтез речи."); // Removed alert as per general instructions
+            // Функция для остановки аудио
+            function stopCurrentAudio() {
+                if (newsAudio.paused === false) {
+                    newsAudio.pause();
+                    newsAudio.currentTime = 0; // Сбрасываем к началу
+                    console.log("Audio stopped.");
                 }
             }
 
-
-            nextButton.addEventListener('click', () => {
-                currentIndex = (currentIndex + 1) % newsData.length; 
-                displayNews(currentIndex);
-                speakCurrentNews(); // Speak new content on "Далее" click
+            // Обработчик события для кнопки "Обновить"
+            refreshButton.addEventListener('click', () => {
+                stopCurrentAudio(); // Останавливаем текущую озвучку перед обновлением
+                location.reload(); // Перезагружаем страницу
             });
 
+            // Обработчик события для кнопки "Стоп"
+            stopButton.addEventListener('click', stopCurrentAudio);
+
             document.addEventListener('DOMContentLoaded', () => {
-                displayNews(currentIndex);
+                displayNews(0); // Всегда отображаем первую новость
                 updateTimer(); 
                 setInterval(updateTimer, 1000); 
 
+                // Автоматическая перезагрузка страницы по таймеру
                 setInterval(() => {
                     console.log("Автоматическая перезагрузка страницы для обновления контента...");
                     location.reload(); 
                 }, refreshInterval);
                 
-                // Автоматическое воспроизведение озвучки при загрузке страницы
+                // Автоматическое воспроизведение при загрузке страницы
                 if (newsData.length > 0) {
-                    speakCurrentNews();
+                     playCurrentAudio();
                 }
             });
-
-            // Add event listener for the speak button (still available for manual replay)
-            speakButton.addEventListener('click', speakCurrentNews);
         </script>
     </body>
     </html>
