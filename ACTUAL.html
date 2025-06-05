@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Новости для Стрима</title>
-        <!-- Мета-теги для предотвращения кэширования, важны для OBS и быстрых обновлений -->
+        <!-- Мета-теги для предотвращения кэширования (по-прежнему важны для CDN и браузеров) -->
         <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta http-equiv="Pragma" content="no-cache" />
         <meta http-equiv="Expires" content="0" />
@@ -104,237 +104,38 @@
                     max-width: 100%; 
                 }
             }
-
-            .article-summary a { 
-                color: #00aaff; 
-                text-decoration: none; 
-            }
-            .article-summary a:hover { 
-                text-decoration: underline; 
-                color: #00ccff;
-            }
-            .label { 
-                font-weight: bold; 
-                color: #ffffff; 
-                text-shadow: 0 0 2px rgba(255,255,255,0.5); 
-            }
-
-            .top-right-controls {
-                position: absolute;
-                top: 5px; 
-                right: 5px; 
-                display: flex;
-                flex-direction: column;
-                align-items: flex-end;
-                z-index: 10;
-                gap: 5px; /* Добавлено для отступа между элементами */
-            }
-            .countdown-text {
-                font-size: 0.85em; /* Меньший шрифт для таймера */
-                color: #00aaff; /* Голубой цвет */
-                text-shadow: 0 0 5px rgba(0,170,255,0.7); /* Легкое свечение */
-                margin-bottom: 3px; /* Отступ от кнопок */
-            }
-            button {
-                padding: 8px 18px; 
-                font-size: 0.9em; 
-                cursor: pointer;
-                background-color: #007bff; 
-                color: white;
-                border: none;
-                border-radius: 5px; 
-                box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-                transition: background-color 0.3s ease, transform 0.2s ease;
-                margin-bottom: 3px; 
-            }
-            button:hover {
-                background-color: #0056b3;
-                transform: translateY(-1px);
-            }
-            #stop-button {
-                background-color: #dc3545; /* Красный цвет для кнопки "Стоп" */
-            }
-            #stop-button:hover {
-                background-color: #bd2130;
-            }
-            .checkbox-control {
-                display: flex;
-                align-items: center;
-                margin-top: 5px; 
-                color: #f0f0f0;
-                font-size: 0.85em; 
-            }
-            .checkbox-control input[type="checkbox"] {
-                margin-right: 5px;
-                transform: scale(1.1); 
-            }
         </style>
     </head>
     <body>
-        <div class="top-right-controls">
-            <span id="countdown-timer" class="countdown-text"></span>
-            <button id="refresh-button">Обновить</button>
-            <button id="stop-button">Стоп</button>
-            <div class="checkbox-control">
-                <input type="checkbox" id="mute-checkbox">
-                <label for="mute-checkbox">Отключить звук</label>
-            </div>
-        </div>
-
         <div class="container">
-            <div id="news-content">
-                <!-- Контент новости будет вставлен сюда JavaScript'ом -->
+            <div id="news-content" class="article-summary">
+                <h2>Dune Awakening установила 2 рекорда — стала худшей и самой популярной игрой издателя Conan Exiles</h2>
+                <p class="summary">MMO Dune Awakening стартовала в раннем доступе с кучей технических проблем и низким рейтингом, но при этом побила рекорд по онлайну для своего издателя Funcom.</p>
+                <div class="questions-container">
+                    <div class="question-box">Почему игроки идут в игру с плохими отзывами?</div>
+                    <div class="question-box">Это новый стандарт запуска игр?</div>
+                </div>
             </div>
         </div>
         
         <!-- Аудио элемент, который будет воспроизводить MP3 -->
-        <audio id="news-audio" preload="auto"></audio>
+        <!-- Для автоматического воспроизведения используем атрибуты autoplay и loop (если нужно) -->
+        <!-- muted предотвращает автоблокировку браузером, но тогда звук не будет слышен -->
+        <audio id="news-audio" preload="auto" src="news_audio_0.mp3" autoplay></audio> 
 
         <script>
-            // Текущая временная метка генерации этой страницы
-            const currentGenerationTimestamp = 1749152949; 
-            // URL файла с последней временной меткой - теперь относительный
-            const latestUpdateFileUrl = 'latest_update.txt'; 
+            // Это JavaScript для отладки.
+            // Функции автоматического обновления и управления аудио (кнопки, таймер) были удалены,
+            // так как вы запросили их исключение.
+            // При использовании в OBS, вам может потребоваться вручную обновлять источник браузера
+            // для получения нового контента.
 
-            const newsData = [{"title": "Dune Awakening установила 2 рекорда — стала худшей и самой популярной игрой издателя Conan Exiles", "link": "https://ixbt.games/news/2025/06/05/dune-awakening-ustanovila-2-rekorda-stala-xudsei-igroi-izdatelya-conan-exiles-i-samoi-populyarnoi.html", "summary": "Ранний доступ к Dune Awakening стартовал с техническими проблемами и плохими отзывами, но при этом установил рекорд по онлайну для издателя Funcom.", "question1": "Стоит ли выпускать игры такими \"сырыми\" в ранний доступ?", "question2": "90 тысяч онлайна — это успех или провал для \"сломанной\" игры?", "audio_url": "news_audio_0.mp3"}]; 
-            let currentIndex = 0; 
-            const newsContentDiv = document.getElementById('news-content');
-            const refreshButton = document.getElementById('refresh-button'); 
-            const stopButton = document.getElementById('stop-button'); 
-            const muteCheckbox = document.getElementById('mute-checkbox'); 
-            const newsAudio = document.getElementById('news-audio'); 
-            const countdownTimerSpan = document.getElementById('countdown-timer');
-
-            let currentAudioUrl = '';
-
-            // Константа для интервала проверки (5 секунд)
-            const CHECK_INTERVAL_SECONDS = 5; 
-            let countdown = CHECK_INTERVAL_SECONDS; 
-
-            function updateCountdownDisplay() {
-                countdownTimerSpan.textContent = `Обновление через: ${countdown} с`;
-                countdown--;
-                if (countdown < 0) {
-                    countdown = CHECK_INTERVAL_SECONDS; 
-                }
-            }
-
-            function displayNews(index) {
-                // Отладочное сообщение: выводим newsData в консоль браузера
-                console.log("newsData для отображения:", newsData); 
-                
-                stopCurrentAudio();
-
-                newsContentDiv.innerHTML = ''; 
-                if (newsData.length === 0 || !newsData[0].title) {
-                    newsContentDiv.innerHTML = '<p style="text-align: center; color: #aaa;">Не удалось загрузить новости. Нет данных или данные неполные.</p>';
-                    refreshButton.style.display = 'none'; 
-                    stopButton.style.display = 'none'; 
-                    muteCheckbox.style.display = 'none'; 
-                    currentAudioUrl = ''; 
-                    return;
-                }
-                
-                const item = newsData[0]; 
-                const div = document.createElement('div');
-                div.className = 'article-summary';
-                div.innerHTML = `
-                    <h2>${item.title}</h2>
-                    <p class="summary">${item.summary}</p>
-                    <div class="questions-container">
-                        <div class="question-box">${item.question1}</div>
-                        <div class="question-box">${item.question2}</div>
-                    </div>
-                `;
-                newsContentDiv.appendChild(div);
-                
-                refreshButton.style.display = 'block'; 
-                stopButton.style.display = 'block'; 
-                muteCheckbox.style.display = 'inline-block'; 
-                
-                // Audio URL теперь является относительным путем к файлу, расположенному в той же директории Netlify
-                currentAudioUrl = item.audio_url + '?v=' + new Date().getTime(); 
-                newsAudio.src = currentAudioUrl;
-                newsAudio.load(); 
-                console.log("Источник аудио установлен на:", currentAudioUrl);
-            }
-
-            function playCurrentAudio() {
-                const urlParams = new URLSearchParams(window.location.search);
-                const autoplayAudioParam = urlParams.get('autoplay_audio'); 
-
-                if (muteCheckbox.checked || autoplayAudioParam === 'false') {
-                    console.log("Воспроизведение аудио пропущено из-за флажка отключения звука или параметра URL.");
-                    stopCurrentAudio(); 
-                    return;
-                }
-
-                if (currentAudioUrl) {
-                    setTimeout(() => {
-                        newsAudio.play().catch(error => {
-                            console.error("Ошибка воспроизведения аудио:", error);
-                        });
-                    }, 1000); 
-                } else {
-                    console.warn("Нет URL аудио для воспроизведения.");
-                }
-            }
-
-            function stopCurrentAudio() {
-                if (newsAudio.paused === false) {
-                    newsAudio.pause();
-                    newsAudio.currentTime = 0; 
-                    console.log("Аудио остановлено.");
-                }
-            }
-
-            refreshButton.addEventListener('click', () => {
-                stopCurrentAudio(); 
-                window.location.href = window.location.pathname + '?v=' + new Date().getTime();
-            });
-
-            stopButton.addEventListener('click', stopCurrentAudio);
-
-            muteCheckbox.addEventListener('change', () => {
-                if (muteCheckbox.checked) {
-                    stopCurrentAudio(); 
-                }
-            });
-
-            # --- Механизм автоматической проверки обновлений ---
-            function checkForUpdates() {
-                fetch(latestUpdateFileUrl + '?t=' + new Date().getTime()) 
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Ошибка HTTP! Статус: ${response.status}`);
-                        }
-                        return response.text();
-                    })
-                    .then(latestTimestamp => {
-                        const serverTimestamp = parseInt(latestTimestamp.trim());
-                        console.log(`Текущая метка: ${currentGenerationTimestamp}, Серверная метка: ${serverTimestamp}`);
-
-                        if (serverTimestamp > currentGenerationTimestamp) {
-                            console.log("Обнаружено новое обновление. Перезагрузка страницы...");
-                            window.location.href = window.location.pathname + '?v=' + new Date().getTime(); 
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Ошибка при проверке обновлений:", error);
-                    });
-            }
-
-            document.addEventListener('DOMContentLoaded', () => {
-                displayNews(0); 
-                
-                if (newsData.length > 0) {
-                     playCurrentAudio();
-                }
-
-                setInterval(checkForUpdates, CHECK_INTERVAL_SECONDS * 1000); 
-
-                updateCountdownDisplay(); 
-                setInterval(updateCountdownDisplay, 1000);
+            const newsAudio = document.getElementById('news-audio');
+            
+            // Проверка и попытка воспроизведения после взаимодействия с документом
+            // (может потребоваться клик пользователя из-за политики браузера)
+            newsAudio.play().catch(error => {
+                console.warn("Автоматическое воспроизведение аудио заблокировано браузером. Попробуйте взаимодействовать со страницей (например, кликнуть).", error);
             });
         </script>
     </body>
