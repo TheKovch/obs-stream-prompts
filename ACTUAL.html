@@ -104,38 +104,198 @@
                     max-width: 100%; 
                 }
             }
+
+            .top-right-controls {
+                position: absolute;
+                top: 5px; 
+                right: 5px; 
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                z-index: 10;
+                gap: 5px; /* Добавлено для отступа между элементами */
+            }
+            .countdown-text {
+                font-size: 0.85em; /* Меньший шрифт для таймера */
+                color: #00aaff; /* Голубой цвет */
+                text-shadow: 0 0 5px rgba(0,170,255,0.7); /* Легкое свечение */
+                margin-bottom: 3px; /* Отступ от кнопок */
+            }
+            button {
+                padding: 8px 18px; 
+                font-size: 0.9em; 
+                cursor: pointer;
+                background-color: #007bff; 
+                color: white;
+                border: none;
+                border-radius: 5px; 
+                box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+                transition: background-color 0.3s ease, transform 0.2s ease;
+                margin-bottom: 3px; 
+            }
+            button:hover {
+                background-color: #0056b3;
+                transform: translateY(-1px);
+            }
+            #stop-button {
+                background-color: #dc3545; /* Красный цвет для кнопки "Стоп" */
+            }
+            #stop-button:hover {
+                background-color: #bd2130;
+            }
+            .checkbox-control {
+                display: flex;
+                align-items: center;
+                margin-top: 5px; 
+                color: #f0f0f0;
+                font-size: 0.85em; 
+            }
+            .checkbox-control input[type="checkbox"] {
+                margin-right: 5px;
+                transform: scale(1.1); 
+            }
         </style>
     </head>
     <body>
+        <div class="top-right-controls">
+            <span id="countdown-timer" class="countdown-text"></span>
+            <button id="refresh-button">Обновить</button>
+            <button id="stop-button">Стоп</button>
+            <div class="checkbox-control">
+                <input type="checkbox" id="mute-checkbox">
+                <label for="mute-checkbox">Отключить звук</label>
+            </div>
+        </div>
+
         <div class="container">
             <div id="news-content" class="article-summary">
-                <h2>Dune Awakening установила 2 рекорда — стала худшей и самой популярной игрой издателя Conan Exiles</h2>
-                <p class="summary">MMO Dune Awakening стартовала в раннем доступе с кучей технических проблем и низким рейтингом, но при этом побила рекорд по онлайну для своего издателя Funcom.</p>
+                <h2>Пропадающая шевелюра героя и сонмы багов. MindsEye попала одному игроку раньше времени, и теперь он делится опытом</h2>
+                <p class="summary">Перед выходом игры MindsEye студию Build a Rocket Boy покинули два ключевых сотрудника, а ранние отзывы игроков сообщают о множестве багов и плохой оптимизации. Разработчики обещают исправить всё патчем первого дня.</p>
                 <div class="questions-container">
-                    <div class="question-box">Почему игроки идут в игру с плохими отзывами?</div>
-                    <div class="question-box">Это новый стандарт запуска игр?</div>
+                    <div class="question-box">Уход топов перед релизом — случайность или тревожный звонок?</div>
+                    <div class="question-box">Патч первого дня — это спасение или отговорка?</div>
                 </div>
             </div>
         </div>
         
         <!-- Аудио элемент, который будет воспроизводить MP3 -->
-        <!-- Для автоматического воспроизведения используем атрибуты autoplay и loop (если нужно) -->
-        <!-- muted предотвращает автоблокировку браузером, но тогда звук не будет слышен -->
+        <!-- Для автоматического воспроизведения используем атрибут autoplay. -->
+        <!-- muted может потребоваться для автовоспроизведения в некоторых браузерах без взаимодействия пользователя -->
         <audio id="news-audio" preload="auto" src="news_audio_0.mp3" autoplay></audio> 
 
         <script>
-            // Это JavaScript для отладки.
-            // Функции автоматического обновления и управления аудио (кнопки, таймер) были удалены,
-            // так как вы запросили их исключение.
-            // При использовании в OBS, вам может потребоваться вручную обновлять источник браузера
-            // для получения нового контента.
+            // Текущая временная метка генерации этой страницы
+            const currentGenerationTimestamp = 1749153777; 
+            // URL файла с последней временной меткой - теперь относительный, ожидается в той же директории Netlify
+            const latestUpdateFileUrl = 'latest_update.txt'; 
 
-            const newsAudio = document.getElementById('news-audio');
-            
-            // Проверка и попытка воспроизведения после взаимодействия с документом
-            // (может потребоваться клик пользователя из-за политики браузера)
-            newsAudio.play().catch(error => {
-                console.warn("Автоматическое воспроизведение аудио заблокировано браузером. Попробуйте взаимодействовать со страницей (например, кликнуть).", error);
+            const newsAudio = document.getElementById('news-audio'); 
+            const refreshButton = document.getElementById('refresh-button'); 
+            const stopButton = document.getElementById('stop-button'); 
+            const muteCheckbox = document.getElementById('mute-checkbox'); 
+            const countdownTimerSpan = document.getElementById('countdown-timer');
+
+            let currentAudioUrl = 'news_audio_0.mp3'; // Текущий URL аудио, используется функциями управления
+
+            // Константа для интервала проверки (5 секунд)
+            const CHECK_INTERVAL_SECONDS = 5; 
+            let countdown = CHECK_INTERVAL_SECONDS; // Начальное значение таймера
+
+            // Функция для обновления отображения таймера
+            function updateCountdownDisplay() {
+                countdownTimerSpan.textContent = `Обновление через: ${countdown} с`;
+                countdown--;
+                if (countdown < 0) {
+                    countdown = CHECK_INTERVAL_SECONDS; // Сброс таймера для следующего цикла
+                }
+            }
+
+            // Функция для воспроизведения аудио (вызывается вручную или по событиям)
+            function playCurrentAudio() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const autoplayAudioParam = urlParams.get('autoplay_audio'); 
+
+                if (muteCheckbox.checked || autoplayAudioParam === 'false') {
+                    console.log("Воспроизведение аудио пропущено из-за флажка отключения звука или параметра URL.");
+                    stopCurrentAudio(); 
+                    return;
+                }
+
+                if (currentAudioUrl) {
+                    // Добавляем кэш-бастер к URL аудио, чтобы гарантировать загрузку свежей версии
+                    newsAudio.src = currentAudioUrl + '?v=' + new Date().getTime(); 
+                    newsAudio.load(); // Загружаем аудио
+                    newsAudio.play().catch(error => {
+                        console.error("Ошибка воспроизведения аудио (возможно, заблокировано браузером):", error);
+                    });
+                    console.log("Аудио запущено. Источник:", newsAudio.src);
+                } else {
+                    console.warn("Нет URL аудио для воспроизведения.");
+                }
+            }
+
+            // Функция для остановки аудио
+            function stopCurrentAudio() {
+                if (newsAudio.paused === false) {
+                    newsAudio.pause();
+                    newsAudio.currentTime = 0; 
+                    console.log("Аудио остановлено.");
+                }
+            }
+
+            // Обработчики событий для кнопок и чекбокса
+            refreshButton.addEventListener('click', () => {
+                stopCurrentAudio(); 
+                // Принудительная перезагрузка страницы с новым кэш-бастером
+                window.location.href = window.location.pathname + '?v=' + new Date().getTime();
+            });
+
+            stopButton.addEventListener('click', stopCurrentAudio);
+
+            muteCheckbox.addEventListener('change', () => {
+                if (muteCheckbox.checked) {
+                    stopCurrentAudio(); 
+                } else {
+                    // Если сняли галочку "Отключить звук", попробуем снова воспроизвести
+                    playCurrentAudio(); 
+                }
+            });
+
+            // Механизм автоматической проверки обновлений
+            function checkForUpdates() {
+                fetch(latestUpdateFileUrl + '?t=' + new Date().getTime()) // Добавляем кэш-бастер к запросу файла
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Ошибка HTTP! Статус: ${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then(latestTimestamp => {
+                        const serverTimestamp = parseInt(latestTimestamp.trim());
+                        console.log(`Текущая метка страницы: ${currentGenerationTimestamp}, Серверная метка: ${serverTimestamp}`);
+
+                        if (serverTimestamp > currentGenerationTimestamp) {
+                            console.log("Обнаружено новое обновление. Перезагрузка страницы...");
+                            // Принудительная перезагрузка страницы с новым кэш-бастером
+                            window.location.href = window.location.pathname + '?v=' + new Date().getTime(); 
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Ошибка при проверке обновлений:", error);
+                    });
+            }
+
+            // Запуск при загрузке документа
+            document.addEventListener('DOMContentLoaded', () => {
+                // Изначальная попытка воспроизведения аудио (может быть заблокирована)
+                playCurrentAudio(); 
+
+                // Запускаем периодическую проверку обновлений каждые 5 секунд
+                setInterval(checkForUpdates, CHECK_INTERVAL_SECONDS * 1000); 
+
+                // Запускаем периодическое обновление таймера обратного отсчета (каждую секунду)
+                updateCountdownDisplay(); // Вызываем один раз сразу для инициализации
+                setInterval(updateCountdownDisplay, 1000);
             });
         </script>
     </body>
