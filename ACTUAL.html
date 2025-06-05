@@ -157,7 +157,6 @@
                 margin-right: 5px;
                 transform: scale(1.1); 
             }
-            /* Стиль для таймера удален */
         </style>
     </head>
     <body>
@@ -168,7 +167,6 @@
                 <input type="checkbox" id="mute-checkbox">
                 <label for="mute-checkbox">Отключить звук</label>
             </div>
-            <!-- Элемент таймера удален -->
         </div>
 
         <div class="container">
@@ -182,11 +180,11 @@
 
         <script>
             // Текущая временная метка генерации этой страницы
-            const currentGenerationTimestamp = 1749135203; 
+            const currentGenerationTimestamp = 1749137421; 
             const githubPagesBaseUrl = "https://TheKovch.github.io/obs-stream-prompts/";
             const latestUpdateFileUrl = githubPagesBaseUrl + 'latest_update.txt'; // URL файла с последней временной меткой
 
-            const newsData = [{"title": "Жаловавшийся на ушедшую от ценностей индустрию продюсер XDefiant ушел из Ubisoft и игровой индустрии", "link": "https://ixbt.games/news/2025/06/05/zalovavsiisya-na-usedsuyu-ot-cennostei-industriyu-prodyuser-xdefiant-usel-iz-ubisoft-i-igrovoi-indus.html", "summary": "Продюсер XDefiant Марк Рубин ушел из Ubisoft и всей игровой индустрии, объяснив это желанием больше времени проводить с семьей. Однако он также раскритиковал издателей за то, что они забыли об игроках, гонясь за прибылью.", "question1": "Его уход – это личное или приговор индустрии?", "question2": "Игры теперь лишь про прибыль, а не про игроков?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
+            const newsData = [{"title": "В хорроре Silent Hill f будет много экшена и сделанный на ближний бой акцент", "link": "https://ixbt.games/news/2025/06/05/v-xorrore-silent-hill-f-budet-mnogo-eksena-i-sdelannyi-na-bliznii-boi-akcent.html", "summary": "Konami на State of Play анонсировала, что в новой Silent Hill f боевая система будет сконцентрирована на сложном ближнем бое с использованием подручных средств. Это решение вызвало вопросы у фанатов, привыкших к атмосфере и головоломкам серии.", "question1": "Silent Hill — это экшен или хоррор?", "question2": "Нужен ли серии такой акцент на боевке?", "audio_url": ""}]; 
             let currentIndex = 0; 
             const newsContentDiv = document.getElementById('news-content');
             const refreshButton = document.getElementById('refresh-button'); 
@@ -276,7 +274,8 @@
                 if (muteCheckbox.checked) {
                     stopCurrentAudio(); 
                 } else {
-                    // playCurrentAudio(); // Опционально: раскомментируйте, если хотите автовоспроизведение при снятии мута
+                    // Опционально: можно добавить playCurrentAudio(); здесь, если нужно автовоспроизведение при снятии мута
+                    // playCurrentAudio(); 
                 }
             });
 
@@ -285,7 +284,7 @@
                 fetch(latestUpdateFileUrl + '?t=' + new Date().getTime()) // Добавляем кэш-бастер к запросу файла
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
+                            throw new Error(`Ошибка HTTP! Статус: ${response.status}`);
                         }
                         return response.text();
                     })
