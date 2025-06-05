@@ -168,7 +168,6 @@
                 <input type="checkbox" id="mute-checkbox">
                 <label for="mute-checkbox">Отключить звук</label>
             </div>
-            <!-- Removed timer display element -->
         </div>
 
         <div class="container">
@@ -177,25 +176,22 @@
             </div>
         </div>
         
-        <!-- Audio element to play MP3 -->
+        <!-- Аудио элемент, который будет воспроизводить MP3 -->
         <audio id="news-audio" preload="auto"></audio>
 
         <script>
-            const newsData = [{"title": "MRC Studio открыла предзаказ на 220-сантиметровую статую Луффи в пятом гире из аниме One Piece", "link": "https://ixbt.games/news/2025/06/05/mrc-studio-otkryla-predzakaz-na-220-santimetrovuyu-statuyu-luffi-v-pyatom-gire-iz-anime-one-piece.html", "summary": "Компания MRC Studio открыла предзаказ на новую статую Монки Д. Луффи в пятом гире, цена которой в масштабе 1/1 может достигать почти 3400$. Релиз коллекционного предмета запланирован на начало 2026 года.", "question1": "Готовы отдать почти $3400 за статую?", "question2": "Какую коллекционную вещь *вы* бы купили за такие деньги?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
+            const newsData = [{"title": "MRC Studio открыла предзаказ на 220-сантиметровую статую Луффи в пятом гире из аниме One Piece", "link": "https://ixbt.games/news/2025/06/05/mrc-studio-otkryla-predzakaz-na-220-santimetrovuyu-statuyu-luffi-v-pyatom-gire-iz-anime-one-piece.html", "summary": "Компания MRC Studio открыла предзаказ на эпическую статую Монки Д. Луффи в его мощном Пятом Гире, с пробужденным дьявольским плодом, выпуск которой ожидается в 2026 году.", "question1": "Готовы отдать целое состояние за любимого героя?", "question2": "Гир 5 - это шедевр или разочарование?", "audio_url": "https://TheKovch.github.io/obs-stream-prompts/news_audio_0.mp3"}]; 
             let currentIndex = 0; 
             const newsContentDiv = document.getElementById('news-content');
             const refreshButton = document.getElementById('refresh-button'); 
             const stopButton = document.getElementById('stop-button'); 
             const muteCheckbox = document.getElementById('mute-checkbox'); 
             const newsAudio = document.getElementById('news-audio'); 
-            // Removed refreshInterval and timeLeft variables as timer is removed
 
             let currentAudioUrl = '';
 
-            // Removed updateTimer function as timer is removed
-
             function displayNews(index) {
-                // Stop current playback before changing news
+                // Останавливаем текущее воспроизведение перед сменой новости
                 stopCurrentAudio();
 
                 newsContentDiv.innerHTML = ''; 
@@ -234,9 +230,12 @@
 
             function playCurrentAudio() {
                 if (currentAudioUrl && !muteCheckbox.checked) {
-                    newsAudio.play().catch(error => {
-                        console.error("Error playing audio:", error);
-                    });
+                    // Добавляем небольшую задержку перед воспроизведением
+                    setTimeout(() => {
+                        newsAudio.play().catch(error => {
+                            console.error("Error playing audio:", error);
+                        });
+                    }, 200); // Задержка 200 мс
                 } else if (muteCheckbox.checked) {
                     console.log("Audio playback skipped because mute checkbox is enabled.");
                 } else {
@@ -270,11 +269,8 @@
 
             document.addEventListener('DOMContentLoaded', () => {
                 displayNews(0); 
-                // Removed timer update interval
                 
-                // --- AUTO-REFRESH REMOVED ---
-                
-                // Auto-play on page load if sound is not muted
+                // Автоматическое воспроизведение при загрузке страницы, если звук не отключен
                 if (newsData.length > 0) {
                      playCurrentAudio();
                 }
