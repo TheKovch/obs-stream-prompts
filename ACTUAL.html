@@ -95,16 +95,16 @@
     <body>
         <div id="character-container">
             <img id="character-image" src="my_c.png" alt="Персонаж">
-            <div id="speech-bubble">Жекуша, мой плюшевый мишка (ты же такой мягенький!), я тут решила свои наушники в стиралке постирать, ну потому что они были грязные! А теперь они мигают и не выключаются! Что мне делать? Ты же стример, ты должен знать, как такую игровую периферию чинить! Ну всё, Жень, и чат, вы пока думайте, а я щас прибегу, только надо срочно от розетки их отсоединить, а то ванна как диско...</div>
+            <div id="speech-bubble">Женька, прикинь! Я тут хлопья засыпала, а они из пакета выскочили и на люстру прилипли! Это магия? Что делать? Стриммер, дай совет! Может, их приручить? Я сейчас побегу за волшебным сачком, а вы тут с чатом устройте мозговой штурм, как этот призрачный завтрак усмирить. Я же не навседолго!</div>
         </div>
         
-        <audio id="character-audio" preload="auto" src="scenario_audio.mp3"></audio> 
+        <audio id="character-audio" preload="auto"></audio> 
 
         <script>
             // Очищаем консоль для более чистого вывода в браузере OBS
             console.clear();
 
-            const currentGenerationTimestamp = 1749473313; 
+            const currentGenerationTimestamp = 1749474034; 
             const latestUpdateFileUrl = 'latest_update.txt'; 
 
             const characterContainer = document.getElementById('character-container');
@@ -116,6 +116,13 @@
 
             function playCharacterScenario() {
                 console.log("[Сценарий] Запуск сценария...");
+
+                // Устанавливаем src и затем инициируем загрузку аудио
+                // Это должно быть ПЕРЕД установкой слушателей и проверкой readyState
+                // для гарантированного срабатывания событий.
+                characterAudio.src = 'scenario_audio.mp3' + '?v=' + new Date().getTime(); 
+                characterAudio.load(); 
+
                 // Проверяем, загружено ли изображение
                 const imageLoadedPromise = new Promise(resolve => {
                     if (characterImage.complete && characterImage.naturalHeight !== 0) {
@@ -143,19 +150,15 @@
                         console.log("[Ресурсы] Аудио готово к воспроизведению (oncanplaythrough).");
                         resolve();
                     };
-                    characterAudio.onerror = () => {
-                        console.error("[Ресурсы] Ошибка загрузки аудио (onerror). Продолжаем в любом случае.");
+                    characterAudio.onerror = (e) => {
+                        console.error("[Ресурсы] Ошибка загрузки аудио (onerror):", e);
                         resolve(); // Продолжаем даже при ошибке загрузки аудио
                     };
-
-                    // Устанавливаем src и затем инициируем загрузку
-                    characterAudio.src = 'scenario_audio.mp3' + '?v=' + new Date().getTime(); 
-                    characterAudio.load(); 
-
+                    
                     // Запасной вариант для случаев, когда oncanplaythrough может не сработать для кэшированного контента
-                    // Проверяем, готово ли уже после установки src и вызова load()
+                    // Проверяем, готово ли уже сразу после load(), на случай очень быстрой загрузки
                     if (characterAudio.readyState >= 3) { // HAVE_FUTURE_DATA или HAVE_ENOUGH_DATA
-                        console.log("[Ресурсы] Аудио уже готово (проверка readyState после загрузки).");
+                        console.log("[Ресурсы] Аудио уже готово (проверка readyState сразу после load).");
                         resolve();
                     }
                 });
@@ -171,8 +174,9 @@
                     // Попытка воспроизвести аудио
                     const playAttempt = (retryCount = 0) => {
                         characterAudio.currentTime = 0; // Сбрасываем аудио на начало
+                        console.log("[Аудио] Попытка воспроизведения аудио. Источник:", characterAudio.src, "Попытка:", retryCount + 1);
                         characterAudio.play().then(() => {
-                            console.log("[Аудио] Аудио успешно запущено. Источник:", characterAudio.src);
+                            console.log("[Аудио] Аудио успешно запущено.");
                         }).catch(error => {
                             console.error(`[Аудио] Ошибка воспроизведения (попытка ${retryCount + 1}):`, error);
                             // Если автовоспроизведение заблокировано или прервано, повторяем попытку через короткую задержку
