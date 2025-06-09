@@ -12,82 +12,82 @@
             body { 
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
                 margin: 0; 
-                background-color: transparent; /* Прозрачный фон для OBS */
+                background-color: transparent; /* Transparent background for OBS */
                 overflow: hidden; 
                 display: flex;
-                justify-content: flex-end; /* Выравнивание к правому краю */
-                align-items: center; /* Центрирование по вертикали */
-                width: 2560px; /* Установка ширины холста */
-                height: 1440px; /* Установка высоты холста */
+                justify-content: flex-end; /* Align to the right edge */
+                align-items: center; /* Center vertically */
+                width: 2560px; /* Set canvas width */
+                height: 1440px; /* Set canvas height */
             }
             #character-container {
                 position: fixed;
-                right: -700px; /* Начальное положение: за экраном справа (ширина 700px) */
+                right: -700px; /* Initial position: off-screen right (width 700px) */
                 top: 50%;
                 transform: translateY(-50%);
-                width: 700px; /* Ширина контейнера персонажа */
-                height: 700px; /* Высота контейнера персонажа */
+                width: 700px; /* Character container width */
+                height: 700px; /* Character container height */
                 background-size: contain;
                 background-repeat: no-repeat;
                 background-position: center;
-                transition: right 1s ease-out; /* Анимация выезда/отъезда */
+                transition: right 1s ease-out; /* Slide-in/slide-out animation */
                 display: flex;
                 flex-direction: column;
                 align-items: flex-end;
-                padding-right: 30px; /* Отступ от края экрана, увеличен */
+                padding-right: 30px; /* Padding from screen edge, increased */
                 box-sizing: border-box;
                 z-index: 100;
-                pointer-events: none; /* Не перехватывать события мыши */
+                pointer-events: none; /* Do not intercept mouse events */
             }
             #character-image {
                 width: 100%;
-                height: 100%; /* Изображение занимает весь контейнер */
+                height: 100%; /* Image fills the container */
                 object-fit: contain;
-                pointer-events: none; /* Не перехватывать события мыши */
+                pointer-events: none; /* Do not intercept mouse events */
             }
             #speech-bubble {
-                position: absolute; /* Позиционируем абсолютно относительно character-container */
-                top: -120px; /* Регулируем положение над головой, скорректировано */
-                left: -450px; /* Регулируем положение слева от персонажа, скорректировано */
-                background-color: rgba(0, 0, 0, 0.7); /* Темный полупрозрачный фон для читаемости */
+                position: absolute; /* Position absolutely relative to character-container */
+                top: -120px; /* Adjust position above the head, corrected */
+                left: -450px; /* Adjust position to the left of the character, corrected */
+                background-color: rgba(0, 0, 0, 0.7); /* Dark translucent background for readability */
                 color: #e0e0e0;
-                border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; /* Более облачная форма */
-                padding: 25px 35px; /* Увеличен padding */
-                font-size: 2.2em; /* Увеличен шрифт */
-                text-align: center; /* Центрируем текст */
-                max-width: 600px; /* Максимальная ширина речевого пузыря, увеличена */
-                box-shadow: 0 0 20px rgba(0,255,255,0.5); /* Усилен неоновый эффект */
-                word-wrap: break-word; /* Перенос длинных слов */
-                opacity: 0; /* Изначально скрыт */
-                transition: opacity 0.5s ease-in; /* Плавное появление */
-                transform: rotate(-5deg); /* Небольшой наклон для эффекта */
+                border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; /* More cloud-like shape */
+                padding: 25px 35px; /* Increased padding */
+                font-size: 2.2em; /* Increased font size */
+                text-align: center; /* Center text */
+                max-width: 600px; /* Max width of speech bubble, increased */
+                box-shadow: 0 0 20px rgba(0,255,255,0.5); /* Enhanced neon effect */
+                word-wrap: break-word; /* Wrap long words */
+                opacity: 0; /* Initially hidden */
+                transition: opacity 0.5s ease-in; /* Smooth fade-in */
+                transform: rotate(-5deg); /* Slight rotation for effect */
             }
             #speech-bubble.visible {
                 opacity: 1;
             }
-            #speech-bubble::before { /* Хвостик облака */
+            #speech-bubble::before { /* Cloud tail */
                 content: '';
                 position: absolute;
-                bottom: -35px; /* Положение хвоста, скорректировано */
-                right: 60px; /* Отступ хвоста от правого края, скорректировано */
+                bottom: -35px; /* Tail position, corrected */
+                right: 60px; /* Tail offset from right edge, corrected */
                 width: 0;
                 height: 0;
-                border-top: 40px solid rgba(0, 0, 0, 0.7); /* Увеличен размер хвоста */
-                border-left: 40px solid transparent; /* Увеличен размер хвоста */
-                border-right: 20px solid transparent; /* Увеличен размер хвоста */
-                filter: drop-shadow(0 10px 10px rgba(0,255,255,0.3)); /* Усилена тень для хвоста */
-                transform: rotate(15deg); /* Наклон хвоста */
+                border-top: 40px solid rgba(0, 0, 0, 0.7); /* Increased tail size */
+                border-left: 40px solid transparent; /* Increased tail size */
+                border-right: 20px solid transparent; /* Increased tail size */
+                filter: drop-shadow(0 10px 10px rgba(0,255,255,0.3)); /* Enhanced shadow for tail */
+                transform: rotate(15deg); /* Tail rotation */
             }
-            #speech-bubble::after { /* Внутренний хвостик для более гладкой формы */
+            #speech-bubble::after { /* Inner tail for smoother shape */
                 content: '';
                 position: absolute;
-                bottom: -25px; /* Положение хвоста, скорректировано */
-                right: 70px; /* Отступ хвоста от правого края, скорректировано */
+                bottom: -25px; /* Tail position, corrected */
+                right: 70px; /* Tail offset from right edge, corrected */
                 width: 0;
                 height: 0;
-                border-top: 30px solid rgba(0, 0, 0, 0.7); /* Увеличен размер хвоста */
-                border-left: 30px solid transparent; /* Увеличен размер хвоста */
-                border-right: 16px solid transparent; /* Увеличен размер хвоста */
+                border-top: 30px solid rgba(0, 0, 0, 0.7); /* Increased tail size */
+                border-left: 30px solid transparent; /* Increased tail size */
+                border-right: 16px solid transparent; /* Increased tail size */
                 transform: rotate(15deg);
             }
         </style>
@@ -95,118 +95,133 @@
     <body>
         <div id="character-container">
             <img id="character-image" src="my_c.png" alt="Персонаж">
-            <div id="speech-bubble">Ой, Женька, привет! Чем ты там так увлеченно занимаешься? Выглядишь очень сосредоточенным. Что сейчас за миссия, интересно? Расскажешь потом? А вы, ребят, любите смотреть, как ваши половинки играют?</div>
+            <div id="speech-bubble">Женька, привет! Что это за игра? Какая у тебя сейчас миссия? Выглядит очень круто! Ты выигрываешь? Чат, а вы как думаете, он справится?</div>
         </div>
         
         <audio id="character-audio" preload="auto" src="scenario_audio.mp3"></audio> 
 
         <script>
-            const currentGenerationTimestamp = 1749469370; 
+            // Clear console for cleaner output in OBS browser source
+            console.clear();
+
+            const currentGenerationTimestamp = 1749469703; 
             const latestUpdateFileUrl = 'latest_update.txt'; 
 
             const characterContainer = document.getElementById('character-container');
             const speechBubble = document.getElementById('speech-bubble');
-            const characterImage = document.getElementById('character-image'); // Получаем ссылку на изображение
+            const characterImage = document.getElementById('character-image'); // Get reference to image
             const characterAudio = document.getElementById('character-audio'); 
             
             const CHECK_INTERVAL_SECONDS = 5; 
 
             function playCharacterScenario() {
-                // Проверяем, загружено ли изображение
+                // Check if image is loaded
                 const imageLoadedPromise = new Promise(resolve => {
                     if (characterImage.complete && characterImage.naturalHeight !== 0) {
+                        console.log("[Resources] Image already loaded.");
                         resolve();
                     } else {
                         characterImage.onload = () => {
-                            console.log("[Resources] Изображение загружено.");
+                            console.log("[Resources] Image loaded.");
                             resolve();
                         };
                         characterImage.onerror = () => {
-                            console.error("[Resources] Ошибка загрузки изображения.");
-                            resolve(); // Продолжаем даже при ошибке загрузки изображения
+                            console.error("[Resources] Image loading error. Proceeding anyway.");
+                            resolve(); // Continue even if image fails to load
                         };
                     }
                 });
 
-                // Проверяем, загружено ли аудио
+                // Check if audio is loaded and ready
                 const audioLoadedPromise = new Promise(resolve => {
-                    if (characterAudio.readyState >= 3) { // HAVE_FUTURE_DATA или HAVE_ENOUGH_DATA
+                    // Set up event listener BEFORE setting src and loading
+                    characterAudio.oncanplaythrough = () => {
+                        console.log("[Resources] Audio ready to play.");
                         resolve();
-                    } else {
-                        characterAudio.oncanplaythrough = () => {
-                            console.log("[Resources] Аудио готово к воспроизведению.");
-                            resolve();
-                        };
-                        characterAudio.onerror = () => {
-                            console.error("[Resources] Ошибка загрузки аудио.");
-                            resolve(); // Продолжаем даже при ошибке загрузки аудио
-                        };
+                    };
+                    characterAudio.onerror = () => {
+                        console.error("[Resources] Audio loading error. Proceeding anyway.");
+                        resolve(); // Continue even if audio fails to load
+                    };
+                    // If audio is already ready (e.g., from cache or very small file)
+                    if (characterAudio.readyState >= 3) { // HAVE_FUTURE_DATA or HAVE_ENOUGH_DATA
+                        console.log("[Resources] Audio already ready.");
+                        resolve();
                     }
-                });
-
-                // Ждем загрузки всех ресурсов
-                Promise.all([imageLoadedPromise, audioLoadedPromise]).then(() => {
-                    console.log("[Scenario] Все необходимые ресурсы загружены. Начинаем анимацию персонажа.");
-                    // Сдвигаем персонажа на экран
-                    characterContainer.style.right = '0px'; 
-                    // Показываем пузырь речи
-                    speechBubble.classList.add('visible');
-
-                    // Добавляем кэш-бастер к URL аудио, чтобы гарантировать загрузку свежей версии
+                    // Set src and load after setting up listeners
                     characterAudio.src = characterAudio.src.split('?')[0] + '?v=' + new Date().getTime(); 
                     characterAudio.load(); 
+                });
 
-                    characterAudio.play().catch(error => {
-                        console.error("[Audio] Ошибка воспроизведения аудио (возможно, заблокировано браузером, или отсутствует):", error);
-                        // Если автовоспроизведение заблокировано или нет аудио, все равно убираем персонажа через резервное время
-                        setTimeout(hideCharacter, 2000 + (characterAudio.duration * 1000 || 5000)); 
-                    });
-                    console.log("[Audio] Попытка воспроизведения аудио. Источник:", characterAudio.src);
+                // Wait for all resources to load
+                Promise.all([imageLoadedPromise, audioLoadedPromise]).then(() => {
+                    console.log("[Scenario] All necessary resources loaded. Starting character animation.");
+                    // Slide character onto screen
+                    characterContainer.style.right = '0px'; 
+                    // Show speech bubble
+                    speechBubble.classList.add('visible');
+
+                    // Attempt to play audio
+                    const playAttempt = (retryCount = 0) => {
+                        characterAudio.play().then(() => {
+                            console.log("[Audio] Audio successfully started. Source:", characterAudio.src);
+                        }).catch(error => {
+                            console.error(`[Audio] Playback error (attempt ${retryCount + 1}):`, error);
+                            // If autoplay is blocked or aborted, try again after a small delay
+                            if ((error.name === "NotAllowedError" || error.name === "AbortError") && retryCount < 3) { // Max 3 retries
+                                console.warn("[Audio] Autoplay blocked or aborted. Retrying in 500ms...");
+                                setTimeout(() => playAttempt(retryCount + 1), 500); 
+                            } else {
+                                console.error("[Audio] Max retries reached or unrecoverable error. Character will hide after default duration.");
+                                // Fallback: if audio fails to play after retries, hide character after a reasonable time
+                                setTimeout(hideCharacter, 2000 + (characterAudio.duration * 1000 || 5000)); 
+                            }
+                        });
+                    };
+                    playAttempt(); // Initial play attempt
 
                     characterAudio.onended = () => {
-                        console.log("[Audio] Аудио завершено. Ждем 2 секунды перед отъездом персонажа.");
-                        setTimeout(hideCharacter, 2000); // Ждем 2 секунды после окончания аудио
+                        console.log("[Audio] Audio finished. Waiting 2 seconds before character leaves.");
+                        setTimeout(hideCharacter, 2000); // Wait 2 seconds after audio ends
                     };
                 });
             }
 
             function hideCharacter() {
-                speechBubble.classList.remove('visible'); // Скрываем пузырь речи
-                characterContainer.style.right = '-700px'; // Отъезжаем за экран (ширина 700px)
-                console.log("Персонаж уехал.");
-                // characterAudio.pause(); // Останавливать не обязательно, если уже завершилось
-                // characterAudio.currentTime = 0;
+                speechBubble.classList.remove('visible'); // Hide speech bubble
+                characterContainer.style.right = '-700px'; // Slide off-screen (width 700px)
+                console.log("Character left.");
             }
             
             function checkForUpdates() {
-                console.log("[Update Check] Проверка обновлений...");
+                console.log("[Update Check] Checking for updates...");
                 fetch(latestUpdateFileUrl + '?t=' + new Date().getTime()) 
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error(`Ошибка HTTP! Статус: ${response.status}`);
+                            throw new Error(`HTTP Error! Status: ${response.status}`);
                         }
                         return response.text();
                     })
                     .then(latestTimestamp => {
                         const serverTimestamp = parseInt(latestTimestamp.trim());
-                        console.log(`[Update Check] Метка сервера: ${serverTimestamp}`);
-                        console.log(`[Update Check] Метка страницы: ${currentGenerationTimestamp}`);
-                        console.log(`[Update Check] Серверная метка (${serverTimestamp}) > Текущей метки (${currentGenerationTimestamp})? ${serverTimestamp > currentGenerationTimestamp}`);
+                        console.log(`[Update Check] Server timestamp: ${serverTimestamp}`);
+                        console.log(`[Update Check] Page timestamp: ${currentGenerationTimestamp}`);
+                        console.log(`[Update Check] Server timestamp (${serverTimestamp}) > Current timestamp (${currentGenerationTimestamp})? ${serverTimestamp > currentGenerationTimestamp}`);
 
                         if (serverTimestamp > currentGenerationTimestamp) {
-                            console.log("[Update Check] Обнаружено новое обновление. Перезагрузка страницы...");
+                            console.log("[Update Check] New update detected. Reloading page...");
                             window.location.href = window.location.pathname + '?v=' + new Date().getTime(); 
                         } else {
-                            console.log("[Update Check] Нет новых обновлений.");
+                            console.log("[Update Check] No new updates.");
                         }
                     })
                     .catch(error => {
-                        console.error("[Update Check] Ошибка при проверке обновлений:", error);
+                        console.error("[Update Check] Error checking for updates:", error);
                     });
             }
 
             document.addEventListener('DOMContentLoaded', () => {
-                playCharacterScenario(); // Запускаем сценарий при загрузке страницы
+                playCharacterScenario(); // Start scenario on page load
                 setInterval(checkForUpdates, CHECK_INTERVAL_SECONDS * 1000); 
             });
         </script>
