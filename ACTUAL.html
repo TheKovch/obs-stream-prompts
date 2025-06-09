@@ -4,8 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Новости для Стрима</title>
-        <!-- Мета-теги для предотвращения кэширования (по-прежнему важны для CDN и браузеров) -->
+        <title>Персонаж для Стрима</title>
         <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta http-equiv="Pragma" content="no-cache" />
         <meta http-equiv="Expires" content="0" />
@@ -13,113 +12,73 @@
             body { 
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
                 margin: 0; 
-                background-color: #000000; /* Чисто черный фон */
-                color: #e0e0e0; /* Светлый текст */
+                background-color: transparent; /* Прозрачный фон для OBS */
+                overflow: hidden; 
                 display: flex;
-                flex-direction: column; 
-                justify-content: flex-start; /* Выравнивание содержимого к верху */
-                align-items: center; /* Центрирование по горизонтали */
-                min-height: 100vh; /* Высота на весь экран */
-                width: 100vw; /* Ширина на весь экран */
-                padding: 0; /* Убираем padding у body */
-                box-sizing: border-box; 
-                overflow: hidden; /* Предотвращаем скроллбары */
+                justify-content: flex-end; /* Выравнивание к правому краю */
+                align-items: center; /* Центрирование по вертикали */
+                min-height: 100vh;
+                width: 100vw;
             }
-            .container { 
-                max-width: 98vw; 
-                width: 98vw;
-                height: 98vh; 
-                max-height: 98vh;
-                background-color: transparent; /* Убираем фон контейнера */
-                padding: 5px; /* Минимальный отступ */
-                border-radius: 0; /* Без скругления */
-                box-shadow: none; /* Без тени */
-                border: none; /* Без рамки */
-                text-align: left; 
+            #character-container {
+                position: fixed;
+                right: -300px; /* Начальное положение: за экраном справа */
+                top: 50%;
+                transform: translateY(-50%);
+                width: 300px; /* Ширина контейнера персонажа */
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+                transition: right 1s ease-out; /* Анимация выезда/отъезда */
                 display: flex;
                 flex-direction: column;
-                justify-content: flex-start; /* Начинаем сверху */
-                align-items: stretch; 
-                box-sizing: border-box; 
+                align-items: flex-end;
+                padding-right: 15px; /* Отступ от края экрана */
+                box-sizing: border-box;
+                z-index: 100;
             }
-            .article-summary { 
-                flex-grow: 1; 
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start; /* Выравниваем содержимое новости к верху */
-                border: none; 
-                background-color: transparent; 
-                padding: 0; /* Без отступа для новости */
-                box-shadow: none; 
+            #character-image {
+                width: 100%;
+                height: 300px; /* Высота изображения персонажа */
+                object-fit: contain;
+                pointer-events: none; /* Чтобы не мешать кликам по элементам позади */
             }
-            .article-summary h2 { 
-                color: #00ffff; 
-                font-size: 1.6em; 
-                text-align: center; 
-                margin-top: 0; 
-                margin-bottom: 3px; 
-                text-shadow: 0 0 8px rgba(0,255,255,0.7); 
-                line-height: 1.1; 
+            #speech-bubble {
+                background-color: rgba(0, 0, 0, 0.7); /* Темный полупрозрачный фон для читаемости */
+                color: #e0e0e0;
+                border-radius: 15px;
+                padding: 10px 15px;
+                margin-top: 10px; /* Отступ от персонажа */
+                font-size: 1.1em;
+                text-align: right;
+                max-width: 280px; /* Максимальная ширина речевого пузыря */
+                box-shadow: 0 0 10px rgba(0,255,255,0.5); /* Неоновый эффект */
+                word-wrap: break-word; /* Перенос длинных слов */
+                opacity: 0; /* Изначально скрыт */
+                transition: opacity 0.5s ease-in; /* Плавное появление */
             }
-            .article-summary p { 
-                margin-bottom: 2px; 
-                line-height: 1.2; 
-                font-size: 1.08em; 
-                text-align: center; 
-                color: #f0f0f0; 
-            }
-            /* Специфично для пересказа - попытка уместить в 2 строки, обрезая лишнее */
-            .article-summary p.summary {
-                max-height: 2.4em; 
-                overflow: hidden;
-                text-overflow: ellipsis; 
-                display: -webkit-box;
-                -webkit-line-clamp: 2; 
-                -webkit-box-orient: vertical;
-                margin-bottom: 6px; 
-            }
-            .questions-container {
-                display: flex;
-                flex-wrap: wrap; 
-                justify-content: center; 
-                gap: 6px; 
-                margin-top: 4px; 
-            }
-            .question-box {
-                background-color: rgba(0, 100, 200, 0.2); 
-                border-radius: 8px; 
-                padding: 7px 12px; 
-                color: #ffffff; 
-                font-size: 0.96em; 
-                line-height: 1.3;
-                text-align: center;
-                flex-shrink: 0; 
-                flex-grow: 1; 
-                max-width: 48%; 
-                box-sizing: border-box; 
-                text-shadow: 0 0 2px rgba(0,255,255,0.5); 
-            }
-            @media (max-width: 600px) {
-                .question-box {
-                    max-width: 100%; 
-                }
+            #speech-bubble.visible {
+                opacity: 1;
             }
 
+            /* Controls for debugging/manual refresh - positioned top right */
             .top-right-controls {
-                position: absolute;
+                position: fixed;
                 top: 5px; 
                 right: 5px; 
                 display: flex;
                 flex-direction: column;
                 align-items: flex-end;
-                z-index: 10;
-                gap: 5px; /* Добавлено для отступа между элементами */
+                z-index: 200; /* Выше контейнера персонажа */
+                gap: 5px;
+                background-color: rgba(0,0,0,0.5); /* Полупрозрачный фон для читаемости */
+                padding: 5px;
+                border-radius: 8px;
             }
             .countdown-text {
-                font-size: 0.85em; /* Меньший шрифт для таймера */
-                color: #00aaff; /* Голубой цвет */
-                text-shadow: 0 0 5px rgba(0,170,255,0.7); /* Легкое свечение */
-                margin-bottom: 3px; /* Отступ от кнопок */
+                font-size: 0.85em;
+                color: #00aaff;
+                text-shadow: 0 0 5px rgba(0,170,255,0.7);
             }
             button {
                 padding: 8px 18px; 
@@ -131,14 +90,13 @@
                 border-radius: 5px; 
                 box-shadow: 0 2px 5px rgba(0,0,0,0.3);
                 transition: background-color 0.3s ease, transform 0.2s ease;
-                margin-bottom: 3px; 
             }
             button:hover {
                 background-color: #0056b3;
                 transform: translateY(-1px);
             }
             #stop-button {
-                background-color: #dc3545; /* Красный цвет для кнопки "Стоп" */
+                background-color: #dc3545;
             }
             #stop-button:hover {
                 background-color: #bd2130;
@@ -146,7 +104,6 @@
             .checkbox-control {
                 display: flex;
                 align-items: center;
-                margin-top: 5px; 
                 color: #f0f0f0;
                 font-size: 0.85em; 
             }
@@ -160,93 +117,97 @@
         <div class="top-right-controls">
             <span id="countdown-timer" class="countdown-text"></span>
             <button id="refresh-button">Обновить</button>
-            <button id="stop-button">Стоп</button>
+            <button id="stop-button">Стоп Аудио</button>
             <div class="checkbox-control">
                 <input type="checkbox" id="mute-checkbox">
                 <label for="mute-checkbox">Отключить звук</label>
             </div>
         </div>
 
-        <div class="container">
-            <div id="news-content" class="article-summary">
-                <h2>Пропадающая шевелюра героя и сонмы багов. MindsEye попала одному игроку раньше времени, и теперь он делится опытом</h2>
-                <p class="summary">Новая игра MindsEye от Build a Rocket Boy столкнулась с критикой за многочисленные баги и проблемы производительности по отзывам ранних игроков, что совпало с уходом двух ключевых руководителей студии незадолго до релиза. Разработчики обещают исправить всё патчем первого дня.</p>
-                <div class="questions-container">
-                    <div class="question-box">Уход руководства перед релизом: совпадение?</div>
-                    <div class="question-box">Патч первого дня спасет эту игру?</div>
-                </div>
-            </div>
+        <div id="character-container">
+            <img id="character-image" src="character_image.png" alt="Персонаж">
+            <div id="speech-bubble">Женёк, приветик, мой котик! Чем там занят? Миссия сложная? Чат, а вы ему там помогаете?</div>
         </div>
         
-        <!-- Аудио элемент, который будет воспроизводить MP3 -->
-        <!-- Для автоматического воспроизведения используем атрибут autoplay. -->
-        <!-- muted может потребоваться для автовоспроизведения в некоторых браузерах без взаимодействия пользователя -->
-        <audio id="news-audio" preload="auto" src="news_audio_0.mp3" autoplay></audio> 
+        <audio id="character-audio" preload="auto" src="scenario_audio.mp3"></audio> 
 
         <script>
-            // Текущая временная метка генерации этой страницы
-            const currentGenerationTimestamp = 1749155289; 
-            // URL файла с последней временной меткой - теперь относительный, ожидается в той же директории Netlify
+            const currentGenerationTimestamp = 1749465894; 
             const latestUpdateFileUrl = 'latest_update.txt'; 
 
-            const newsAudio = document.getElementById('news-audio'); 
+            const characterContainer = document.getElementById('character-container');
+            const speechBubble = document.getElementById('speech-bubble');
+            const characterAudio = document.getElementById('character-audio'); 
             const refreshButton = document.getElementById('refresh-button'); 
             const stopButton = document.getElementById('stop-button'); 
             const muteCheckbox = document.getElementById('mute-checkbox'); 
             const countdownTimerSpan = document.getElementById('countdown-timer');
 
-            let currentAudioUrl = 'news_audio_0.mp3'; // Текущий URL аудио, используется функциями управления
-
-            // Константа для интервала проверки (5 секунд)
             const CHECK_INTERVAL_SECONDS = 5; 
-            let countdown = CHECK_INTERVAL_SECONDS; // Начальное значение таймера
+            let countdown = CHECK_INTERVAL_SECONDS; 
 
-            // Функция для обновления отображения таймера
             function updateCountdownDisplay() {
                 countdownTimerSpan.textContent = `Обновление через: ${countdown} с`;
                 countdown--;
                 if (countdown < 0) {
-                    countdown = CHECK_INTERVAL_SECONDS; // Сброс таймера для следующего цикла
+                    countdown = CHECK_INTERVAL_SECONDS; 
                 }
             }
 
-            // Функция для воспроизведения аудио (вызывается вручную или по событиям)
-            function playCurrentAudio() {
+            function playCharacterScenario() {
+                // Сдвигаем персонажа на экран
+                characterContainer.style.right = '0px'; 
+                // Показываем пузырь речи
+                speechBubble.classList.add('visible');
+
                 const urlParams = new URLSearchParams(window.location.search);
                 const autoplayAudioParam = urlParams.get('autoplay_audio'); 
 
                 if (muteCheckbox.checked || autoplayAudioParam === 'false') {
-                    console.log("Воспроизведение аудио пропущено из-за флажка отключения звука или параметра URL.");
-                    stopCurrentAudio(); 
+                    console.log("[Audio] Воспроизведение пропущено (отключение звука или URL-параметр).");
+                    // Если звук отключен, ждем 2 секунды + длительность, если бы звук был, затем уезжаем
+                    setTimeout(hideCharacter, 2000 + (characterAudio.duration * 1000 || 5000)); // Добавляем резервное время для длительности аудио
                     return;
                 }
 
-                if (currentAudioUrl) {
+                if (characterAudio.src) {
                     // Добавляем кэш-бастер к URL аудио, чтобы гарантировать загрузку свежей версии
-                    newsAudio.src = currentAudioUrl + '?v=' + new Date().getTime(); 
-                    newsAudio.load(); // Загружаем аудио
-                    newsAudio.play().catch(error => {
-                        console.error("Ошибка воспроизведения аудио (возможно, заблокировано браузером):", error);
+                    characterAudio.src = characterAudio.src.split('?')[0] + '?v=' + new Date().getTime(); 
+                    characterAudio.load(); 
+                    characterAudio.play().catch(error => {
+                        console.error("[Audio] Ошибка воспроизведения (возможно, заблокировано браузером):", error);
+                        // Если автовоспроизведение заблокировано, все равно убираем персонажа через время
+                        setTimeout(hideCharacter, 2000 + (characterAudio.duration * 1000 || 5000));
                     });
-                    console.log("Аудио запущено. Источник:", newsAudio.src);
+                    console.log("[Audio] Аудио запущено. Источник:", characterAudio.src);
+
+                    characterAudio.onended = () => {
+                        console.log("[Audio] Аудио завершено. Ждем 2 секунды перед отъездом.");
+                        setTimeout(hideCharacter, 2000); // Ждем 2 секунды после окончания аудио
+                    };
                 } else {
-                    console.warn("Нет URL аудио для воспроизведения.");
+                    console.warn("[Audio] Нет URL аудио для воспроизведения. Персонаж уедет через 5 секунд.");
+                    setTimeout(hideCharacter, 5000); // Если нет аудио, уезжаем через 5 секунд
                 }
             }
 
-            // Функция для остановки аудио
+            function hideCharacter() {
+                speechBubble.classList.remove('visible'); // Скрываем пузырь речи
+                characterContainer.style.right = '-300px'; // Отъезжаем за экран
+                console.log("Персонаж уехал.");
+                stopCurrentAudio(); // Останавливаем аудио, если оно еще играет
+            }
+
             function stopCurrentAudio() {
-                if (newsAudio.paused === false) {
-                    newsAudio.pause();
-                    newsAudio.currentTime = 0; 
-                    console.log("Аудио остановлено.");
+                if (characterAudio.paused === false) {
+                    characterAudio.pause();
+                    characterAudio.currentTime = 0; 
+                    console.log("[Audio] Аудио остановлено.");
                 }
             }
 
-            // Обработчики событий для кнопок и чекбокса
             refreshButton.addEventListener('click', () => {
                 stopCurrentAudio(); 
-                // Принудительная перезагрузка страницы с новым кэш-бастером
                 window.location.href = window.location.pathname + '?v=' + new Date().getTime();
             });
 
@@ -256,15 +217,13 @@
                 if (muteCheckbox.checked) {
                     stopCurrentAudio(); 
                 } else {
-                    // Если сняли галочку "Отключить звук", попробуем снова воспроизвести
-                    playCurrentAudio(); 
+                    playCharacterScenario(); // Попытаться воспроизвести, если сняли mute
                 }
             });
 
-            // Механизм автоматической проверки обновлений
             function checkForUpdates() {
-                console.log("Проверка обновлений...");
-                fetch(latestUpdateFileUrl + '?t=' + new Date().getTime()) // Добавляем кэш-бастер к запросу файла
+                console.log("[Update Check] Проверка обновлений...");
+                fetch(latestUpdateFileUrl + '?t=' + new Date().getTime()) 
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`Ошибка HTTP! Статус: ${response.status}`);
@@ -273,34 +232,28 @@
                     })
                     .then(latestTimestamp => {
                         const serverTimestamp = parseInt(latestTimestamp.trim());
-                        console.log(`Получена метка сервера: ${serverTimestamp}`);
-                        console.log(`Текущая метка страницы: ${currentGenerationTimestamp}`);
-                        console.log(`Серверная метка ${serverTimestamp} > Текущей метки ${currentGenerationTimestamp}? ${serverTimestamp > currentGenerationTimestamp}`);
-
+                        console.log(`[Update Check] Метка сервера: ${serverTimestamp}`);
+                        console.log(`[Update Check] Метка страницы: ${currentGenerationTimestamp}`);
+                        console.log(`[Update Check] Серверная метка (${serverTimestamp}) > Текущей метки (${currentGenerationTimestamp})? ${serverTimestamp > currentGenerationTimestamp}`);
 
                         if (serverTimestamp > currentGenerationTimestamp) {
-                            console.log("Обнаружено новое обновление. Перезагрузка страницы...");
-                            // Принудительная перезагрузка страницы с новым кэш-бастером
+                            console.log("[Update Check] Обнаружено новое обновление. Перезагрузка страницы...");
                             window.location.href = window.location.pathname + '?v=' + new Date().getTime(); 
                         } else {
-                            console.log("Нет новых обновлений.");
+                            console.log("[Update Check] Нет новых обновлений.");
                         }
                     })
                     .catch(error => {
-                        console.error("Ошибка при проверке обновлений:", error);
+                        console.error("[Update Check] Ошибка при проверке обновлений:", error);
                     });
             }
 
-            // Запуск при загрузке документа
             document.addEventListener('DOMContentLoaded', () => {
-                // Изначальная попытка воспроизведения аудио (может быть заблокирована)
-                playCurrentAudio(); 
+                playCharacterScenario(); // Запускаем сценарий при загрузке страницы
 
-                // Запускаем периодическую проверку обновлений каждые 5 секунд
                 setInterval(checkForUpdates, CHECK_INTERVAL_SECONDS * 1000); 
 
-                // Запускаем периодическое обновление таймера обратного отсчета (каждую секунду)
-                updateCountdownDisplay(); // Вызываем один раз сразу для инициализации
+                updateCountdownDisplay(); 
                 setInterval(updateCountdownDisplay, 1000);
             });
         </script>
