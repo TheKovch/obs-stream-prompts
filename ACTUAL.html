@@ -95,7 +95,7 @@
     <body>
         <div id="character-container">
             <img id="character-image" src="my_c.png" alt="Персонаж">
-            <div id="speech-bubble">Женька, прикинь! Я тут хлопья засыпала, а они из пакета выскочили и на люстру прилипли! Это магия? Что делать? Стриммер, дай совет! Может, их приручить? Я сейчас побегу за волшебным сачком, а вы тут с чатом устройте мозговой штурм, как этот призрачный завтрак усмирить. Я же не навседолго!</div>
+            <div id="speech-bubble">Женькуш, ты читал, что в Starfield наконец-то можно будет нормально строить базы? А мне вот интересно, там котика можно будет завести, чтобы он по базе ходил? А то без котика не то! Ладно, я быстро, а вы там с чатом поспорьте, какой котик круче!</div>
         </div>
         
         <audio id="character-audio" preload="auto"></audio> 
@@ -104,7 +104,7 @@
             // Очищаем консоль для более чистого вывода в браузере OBS
             console.clear();
 
-            const currentGenerationTimestamp = 1749474034; 
+            const currentGenerationTimestamp = 1749474949; 
             const latestUpdateFileUrl = 'latest_update.txt'; 
 
             const characterContainer = document.getElementById('character-container');
@@ -114,7 +114,24 @@
             
             const CHECK_INTERVAL_SECONDS = 5; 
 
-            function playCharacterScenario() {
+            // Функция для проверки доступности аудиофайла по HTTP
+            async function checkAudioAvailability(url) {
+                try {
+                    const response = await fetch(url, { method: 'HEAD' }); // Используем HEAD запрос для проверки существования
+                    if (response.ok && response.headers.get('content-type') && response.headers.get('content-type').startsWith('audio/mpeg')) {
+                        console.log(`[Ресурсы] Аудиофайл доступен по HTTP: ${url}`);
+                        return true;
+                    } else {
+                        console.warn(`[Ресурсы] Аудиофайл недоступен или некорректный тип контента: ${url}, Статус: ${response.status}, Тип: ${response.headers.get('content-type')}`);
+                        return false;
+                    }
+                } catch (error) {
+                    console.error(`[Ресурсы] Ошибка при проверке доступности аудиофайла ${url}:`, error);
+                    return false;
+                }
+            }
+
+            async function playCharacterScenario() {
                 console.log("[Сценарий] Запуск сценария...");
 
                 // Устанавливаем src и затем инициируем загрузку аудио
@@ -163,6 +180,24 @@
                     }
                 });
 
+                // Дополнительная проверка: ждем, пока аудиофайл станет доступен на Netlify
+                let audioIsAvailable = false;
+                if ('scenario_audio.mp3') { // Проверяем, если аудиоисточник не пустой
+                    console.log("[Ресурсы] Ожидание доступности аудиофайла на сервере Netlify...");
+                    while (!audioIsAvailable) {
+                        audioIsAvailable = await checkAudioAvailability(characterAudio.src);
+                        if (!audioIsAvailable) {
+                            console.log("[Ресурсы] Аудиофайл пока не доступен. Ожидание 1 секунды перед повторной проверкой...");
+                            await new Promise(r => setTimeout(r, 1000));
+                        }
+                    }
+                    console.log("[Ресурсы] Аудиофайл доступен на Netlify.");
+                } else {
+                    console.log("[Ресурсы] Аудиоисточник пустой, пропуск проверки доступности.");
+                    audioIsAvailable = true; // Если аудио нет, считаем его доступным для продолжения
+                }
+
+
                 // Ждем загрузки всех ресурсов
                 Promise.all([imageLoadedPromise, audioLoadedPromise]).then(() => {
                     console.log("[Сценарий] Все необходимые ресурсы загружены. Начинаем анимацию персонажа.");
@@ -173,28 +208,33 @@
 
                     // Попытка воспроизвести аудио
                     const playAttempt = (retryCount = 0) => {
-                        characterAudio.currentTime = 0; // Сбрасываем аудио на начало
-                        console.log("[Аудио] Попытка воспроизведения аудио. Источник:", characterAudio.src, "Попытка:", retryCount + 1);
-                        characterAudio.play().then(() => {
-                            console.log("[Аудио] Аудио успешно запущено.");
-                        }).catch(error => {
-                            console.error(`[Аудио] Ошибка воспроизведения (попытка ${retryCount + 1}):`, error);
-                            // Если автовоспроизведение заблокировано или прервано, повторяем попытку через короткую задержку
-                            if ((error.name === "NotAllowedError" || error.name === "AbortError") && retryCount < 3) { // Максимум 3 попытки
-                                console.warn("[Аудио] Автовоспроизведение заблокировано или прервано. Повторная попытка через 500 мс...");
-                                setTimeout(() => playAttempt(retryCount + 1), 500); 
-                            } else {
-                                console.error("[Аудио] Достигнуто максимальное количество попыток или невосстановимая ошибка. Персонаж скроется через время по умолчанию.");
-                                // Запасной вариант: если аудио не воспроизводится после повторных попыток, скрываем персонажа через разумное время
-                                setTimeout(hideCharacter, 2000 + (characterAudio.duration * 1000 || 5000)); 
-                            }
-                        });
+                        if (audioIsAvailable && characterAudio.src) { // Дополнительная проверка на наличие src
+                            characterAudio.currentTime = 0; // Сбрасываем аудио на начало
+                            console.log(`[Аудио] Попытка воспроизведения аудио. Источник: ${characterAudio.src}, Попытка: ${retryCount + 1}`);
+                            characterAudio.play().then(() => {
+                                console.log("[Аудио] Аудио успешно запущено.");
+                            }).catch(error => {
+                                console.error(`[Аудио] Ошибка воспроизведения (попытка ${retryCount + 1}):`, error);
+                                // Если автовоспроизведение заблокировано или прервано, повторяем попытку через короткую задержку
+                                if ((error.name === "NotAllowedError" || error.name === "AbortError") && retryCount < 3) { // Максимум 3 попытки
+                                    console.warn("[Аудио] Автовоспроизведение заблокировано или прервано. Повторная попытка через 500 мс...");
+                                    setTimeout(() => playAttempt(retryCount + 1), 500); 
+                                } else {
+                                    console.error("[Аудио] Достигнуто максимальное количество попыток или невосстановимая ошибка. Персонаж скроется через время по умолчанию.");
+                                    // Запасной вариант: если аудио не воспроизводится после повторных попыток, скрываем персонажа через разумное время
+                                    setTimeout(hideCharacterAndScheduleNextCheck, 2000 + (characterAudio.duration * 1000 || 5000)); 
+                                }
+                            });
+                        } else {
+                            console.warn("[Аудио] Аудиофайл недоступен или отсутствует. Пропуск воспроизведения.");
+                            hideCharacterAndScheduleNextCheck(); // Скрываем персонажа и планируем следующую проверку
+                        }
                     };
                     playAttempt(); // Инициируем попытку воспроизведения
 
                     characterAudio.onended = () => {
                         console.log("[Аудио] Аудио завершено. Ожидаем 2 секунды перед уходом персонажа.");
-                        setTimeout(hideCharacter, 2000); // Ждем 2 секунды после окончания аудио
+                        setTimeout(hideCharacterAndScheduleNextCheck, 2000); // Ждем 2 секунды после окончания аудио
                     };
                 });
             }
@@ -203,6 +243,12 @@
                 speechBubble.classList.remove('visible'); // Скрываем облако речи
                 characterContainer.style.right = '-700px'; // Уезжаем за экран (ширина 700px)
                 console.log("Персонаж уехал.");
+            }
+
+            function hideCharacterAndScheduleNextCheck() {
+                hideCharacter(); // Скрываем персонажа
+                console.log("[Обновления] Планирование следующей проверки обновлений...");
+                setTimeout(checkForUpdates, CHECK_INTERVAL_SECONDS * 1000); // Запускаем проверку через интервал
             }
             
             function checkForUpdates() {
@@ -224,17 +270,20 @@
                             console.log("[Проверка Обновлений] Обнаружено новое обновление. Перезагрузка страницы...");
                             window.location.href = window.location.pathname + '?v=' + new Date().getTime(); 
                         } else {
-                            console.log("[Проверка Обновлений] Нет новых обновлений.");
+                            console.log("[Проверка Обновлений] Нет новых обновлений. Планирование повторной проверки.");
+                            setTimeout(checkForUpdates, CHECK_INTERVAL_SECONDS * 1000); // Повторная проверка через интервал
                         }
                     })
                     .catch(error => {
                         console.error("[Проверка Обновлений] Ошибка при проверке обновлений:", error);
+                        setTimeout(checkForUpdates, CHECK_INTERVAL_SECONDS * 1000); // Повторная проверка даже при ошибке
                     });
             }
 
             document.addEventListener('DOMContentLoaded', () => {
-                playCharacterScenario(); // Запускаем сценарий при загрузке страницы
-                setInterval(checkForUpdates, CHECK_INTERVAL_SECONDS * 1000); 
+                // При загрузке страницы сразу запускаем сценарий.
+                // После завершения сценария (скрытия персонажа) будет запланирована первая проверка обновлений.
+                playCharacterScenario(); 
             });
         </script>
     </body>
