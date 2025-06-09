@@ -81,7 +81,7 @@
             #speech-bubble::after { /* Внутренний хвостик для более гладкой формы */
                 content: '';
                 position: absolute;
-                bottom: -25px; /* Tail position, corrected */
+                bottom: -25px; /* Положение хвоста, скорректировано */
                 right: 70px; /* Отступ хвоста от правого края, скорректировано */
                 width: 0;
                 height: 0;
@@ -95,7 +95,7 @@
     <body>
         <div id="character-container">
             <img id="character-image" src="my_c.png" alt="Персонаж">
-            <div id="speech-bubble">Ой, Женька, а что там за миссия у тебя такая? Получается пройти? Я тут сижу, смотрю, так захватывающе! 😊 Как думаете, мне тоже стоит попробовать эту игру?</div>
+            <div id="speech-bubble">Ой, Женька, привет! Что там за миссия у тебя? Выглядит как что-то супер-интересное! А как думаете, чат, он скоро закончит, или я могу на чаек рассчитывать?</div>
         </div>
         
         <audio id="character-audio" preload="auto" src="scenario_audio.mp3"></audio> 
@@ -104,7 +104,7 @@
             // Очищаем консоль для более чистого вывода в браузере OBS
             console.clear();
 
-            const currentGenerationTimestamp = 1749470766; 
+            const currentGenerationTimestamp = 1749470847; 
             const latestUpdateFileUrl = 'latest_update.txt'; 
 
             const characterContainer = document.getElementById('character-container');
@@ -115,10 +115,7 @@
             const CHECK_INTERVAL_SECONDS = 5; 
 
             function playCharacterScenario() {
-                // Устанавливаем источник аудио и загружаем *до* установки слушателей для надежного oncanplaythrough
-                characterAudio.src = 'scenario_audio.mp3' + '?v=' + new Date().getTime(); // Используем переданный audio_src
-                characterAudio.load(); 
-
+                console.log("[Сценарий] Запуск сценария...");
                 // Проверяем, загружено ли изображение
                 const imageLoadedPromise = new Promise(resolve => {
                     if (characterImage.complete && characterImage.naturalHeight !== 0) {
@@ -138,6 +135,10 @@
 
                 // Проверяем, загружено ли аудио и готово ли к воспроизведению
                 const audioLoadedPromise = new Promise(resolve => {
+                    // Очищаем существующие слушатели, чтобы избежать множественных вызовов
+                    characterAudio.oncanplaythrough = null;
+                    characterAudio.onerror = null;
+
                     characterAudio.oncanplaythrough = () => {
                         console.log("[Ресурсы] Аудио готово к воспроизведению (oncanplaythrough).");
                         resolve();
@@ -146,6 +147,11 @@
                         console.error("[Ресурсы] Ошибка загрузки аудио (onerror). Продолжаем в любом случае.");
                         resolve(); // Продолжаем даже при ошибке загрузки аудио
                     };
+
+                    // Устанавливаем src и затем инициируем загрузку
+                    characterAudio.src = 'scenario_audio.mp3' + '?v=' + new Date().getTime(); 
+                    characterAudio.load(); 
+
                     // Запасной вариант для случаев, когда oncanplaythrough может не сработать для кэшированного контента
                     // Проверяем, готово ли уже после установки src и вызова load()
                     if (characterAudio.readyState >= 3) { // HAVE_FUTURE_DATA или HAVE_ENOUGH_DATA
