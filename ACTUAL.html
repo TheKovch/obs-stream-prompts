@@ -95,7 +95,7 @@
     <body>
         <div id="character-container">
             <img id="character-image" src="my_c.png" alt="Персонаж">
-            <div id="speech-bubble">Женьчик! Ты не поверишь! Я пыталась помыть посуду, а моя любимая кружка почему-то превратилась в портал, и оттуда вылетела вся вода! Как мне это починить, Женьчик? Она же была *анти-портальная*! А? Пока думай, я скоро примчусь, только найду, куда делся мой контроллер!</div>
+            <div id="speech-bubble">Ошибка генерации: HTTPConnectionPool(host='localhost', port=42353): Read timed out. (read timeout=90.0)</div>
         </div>
         
         <audio id="character-audio" preload="auto"></audio> 
@@ -104,7 +104,7 @@
             // Очищаем консоль для более чистого вывода в браузере OBS
             console.clear();
 
-            const currentGenerationTimestamp = 1749475388; 
+            const currentGenerationTimestamp = 1749475541; 
             const latestUpdateFileUrl = 'latest_update.txt'; 
 
             const characterContainer = document.getElementById('character-container');
